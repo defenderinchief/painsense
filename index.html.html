@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PainSense</title>
+  
+  <!-- Import maps for Three.js modules -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f7;
+      --bg-tertiary: #e8e8ed;
+      --text-primary: #1d1d1f;
+      --text-secondary: #86868b;
+      --accent: #007aff;
+      --accent-hover: #0056b3;
+      --border: rgba(0,0,0,0.08);
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Screen Management */
+    .screen {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+    .screen.active {
+      display: flex;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .header-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: var(--accent);
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .back-btn:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* 3D Viewer */
+    .viewer-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .viewer-container {
+      flex: 1;
+      position: relative;
+      background: linear-gradient(180deg, #e8e8ed 0%, #f5f5f7 100%);
+      min-height: 60vh;
+    }
+    #canvas-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .viewer-overlay {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-primary);
+      padding: 12px 24px;
+      padding-right: 40px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+      max-width: 90%;
+      z-index: 10;
+    }
+    .viewer-overlay.hidden {
+      display: none;
+    }
+    .viewer-overlay h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .viewer-overlay p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .viewer-overlay .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: var(--bg-tertiary);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .viewer-overlay .close-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    /* Selected Muscle Indicator */
+    .muscle-indicator {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+    }
+    .muscle-indicator.visible {
+      display: flex;
+    }
+    .muscle-indicator .name {
+      font-weight: 500;
+    }
+    .muscle-indicator button {
+      background: white;
+      color: var(--accent);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* Region Buttons */
+    .region-bar {
+      background: var(--bg-primary);
+      border-top: 1px solid var(--border);
+      padding: 16px;
+      overflow-x: auto;
+    }
+    .region-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .region-btn {
+      padding: 10px 16px;
+      background: var(--bg-secondary);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .region-btn:hover {
+      border-color: var(--accent);
+    }
+    .region-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Centered Content */
+    .centered-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 24px;
+      max-width: 560px;
+      margin: 0 auto;
+      width: 100%;
+      overflow-y: auto;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      width: 100%;
+    }
+    .card-header {
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .card-subtitle {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Summary Badge */
+    .summary-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-primary);
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .summary-badge .region {
+      font-weight: 500;
+    }
+    .summary-badge .separator {
+      color: var(--text-secondary);
+    }
+    .summary-badge .muscle {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* Pain Scale */
+    .pain-scale {
+      margin-bottom: 32px;
+    }
+    .pain-display {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .pain-number {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 600;
+      color: white;
+      margin: 0 auto 12px;
+      transition: background 0.3s;
+    }
+    .pain-label {
+      font-size: 20px;
+      font-weight: 500;
+    }
+    .pain-slider {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      -webkit-appearance: none;
+      background: linear-gradient(to right, #34c759, #ffd60a, #ff9500, #ff3b30);
+      outline: none;
+    }
+    .pain-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+    .pain-markers {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Cause Selection */
+    .cause-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .cause-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg-secondary);
+      border: 2px solid transparent;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cause-item:hover {
+      border-color: var(--accent);
+    }
+    .cause-item.selected {
+      border-color: var(--accent);
+      background: rgba(0, 122, 255, 0.05);
+    }
+    .cause-item .radio {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .cause-item.selected .radio {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+    .cause-item.selected .radio::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+    }
+    .cause-item .label {
+      font-size: 15px;
+    }
+
+    /* Text Input */
+    .text-input {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 80px;
+      margin-bottom: 24px;
+    }
+    .text-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .input-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 16px 32px;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      width: 100%;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+    .btn-primary:disabled {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      margin-top: 12px;
+    }
+    .btn-secondary:hover {
+      background: #d1d1d6;
+    }
+
+    /* Results */
+    .result-section {
+      margin-bottom: 20px;
+    }
+    .result-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .result-value {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+    .result-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .intensity-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      flex-shrink: 0;
+    }
+    .result-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .result-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* Assessment Box */
+    .assessment-box {
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .assessment-box .title {
+      font-weight: 600;
+      color: #1565c0;
+      margin-bottom: 8px;
+    }
+    .assessment-box .text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #0d47a1;
+    }
+
+    /* Disclaimer */
+    .disclaimer {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .disclaimer-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .disclaimer-text {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Solutions */
+    .selfcare-box {
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .selfcare-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #2e7d32;
+    }
+    .selfcare-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #1b5e20;
+    }
+    .stretch-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+    .stretch-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .stretch-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Loading */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .loading-overlay.hidden {
+      display: none;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--bg-tertiary);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .error-msg {
+      color: #dc3545;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Panel Title */
+    .panel-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen 1: Full Body View -->
+  <div id="screen-body" class="screen active">
+    <header class="header">
+      <div class="header-content">
+        <span class="logo">PainSense</span>
+        <span class="header-subtitle">Where does it hurt?</span>
+      </div>
+    </header>
+    <div class="viewer-wrapper">
+      <div class="viewer-container">
+        <div id="canvas-container"></div>
+        <div class="loading-overlay" id="loading">
+          <div class="spinner"></div>
+          <p id="loading-text">Loading anatomy model...</p>
+        </div>
+        <div class="viewer-overlay" id="instructions-full">
+          <h3>Click on the area of pain</h3>
+          <p>Rotate: drag • Zoom: scroll • Or select region below</p>
+        </div>
+        <div class="muscle-indicator" id="muscle-indicator">
+          <span class="name" id="indicator-name">Muscle Name</span>
+          <button id="confirm-btn">Select This</button>
+        </div>
+      </div>
+      <div class="region-bar">
+        <div class="region-buttons" id="region-buttons"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2: Focused/Zoomed View - Uses same canvas, just different header -->
+  <div id="screen-focus" class="screen">
+    <header class="header">
+      <div class="header-content">
+        <button class="back-btn" id="back-to-body">← Back</button>
+        <span class="logo" id="focus-region-title">Region</span>
+        <button class="back-btn" id="start-over-focus">Start Over</button>
+      </div>
+    </header>
+    <div class="viewer-wrapper">
+      <div class="viewer-container">
+        <div id="canvas-container-focus"></div>
+        <div class="viewer-overlay" id="focus-overlay">
+          <button class="close-btn" id="close-focus-overlay">✕</button>
+          <h3>Click on the specific muscle</h3>
+          <p id="focus-instruction">Select the exact area that hurts</p>
+        </div>
+        <div class="muscle-indicator" id="muscle-indicator-focus">
+          <span class="name" id="indicator-name-focus">Muscle Name</span>
+          <button id="confirm-btn-focus">Select This</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Pain Intensity -->
+  <div id="screen-intensity" class="screen">
+    <header class="header">
+      <div class="header-content">
+        <button class="back-btn" id="back-to-focus">← Back</button>
+        <span class="logo">Pain Intensity</span>
+        <button class="back-btn" id="start-over-intensity">Start Over</button>
+      </div>
+    </header>
+    <div class="centered-content">
+      <div class="summary-badge">
+        <span class="region" id="intensity-region"></span>
+        <span class="separator">→</span>
+        <span class="muscle" id="intensity-muscle"></span>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">How intense is your pain?</h2>
+          <p class="card-subtitle">Move the slider to indicate your current pain level.</p>
+        </div>
+        <div class="pain-scale">
+          <div class="pain-display">
+            <div class="pain-number" id="pain-number">5</div>
+            <div class="pain-label" id="pain-label">Moderate</div>
+          </div>
+          <input type="range" class="pain-slider" id="pain-slider" min="1" max="10" value="5">
+          <div class="pain-markers">
+            <span>1 - Minimal</span>
+            <span>10 - Extreme</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="to-causes">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4: Causes -->
+  <div id="screen-causes" class="screen">
+    <header class="header">
+      <div class="header-content">
+        <button class="back-btn" id="back-to-intensity">← Back</button>
+        <span class="logo">What Caused This?</span>
+        <button class="back-btn" id="start-over-causes">Start Over</button>
+      </div>
+    </header>
+    <div class="centered-content">
+      <div class="summary-badge">
+        <span class="region" id="causes-region"></span>
+        <span class="separator">→</span>
+        <span class="muscle" id="causes-muscle"></span>
+        <span class="separator">•</span>
+        <span id="causes-intensity">5/10</span>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">How did this pain start?</h2>
+          <p class="card-subtitle">Understanding the cause helps us provide better recommendations.</p>
+        </div>
+        <div class="cause-list" id="cause-list"></div>
+        <label class="input-label">Describe when or how it started (optional)</label>
+        <textarea class="text-input" id="cause-description" placeholder="E.g., 'Started after increasing my running distance last week'"></textarea>
+        <button class="btn btn-primary" id="to-results">View Results</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 5: Results -->
+  <div id="screen-results" class="screen">
+    <header class="header">
+      <div class="header-content">
+        <button class="back-btn" id="back-to-causes">← Back</button>
+        <span class="logo">Assessment</span>
+        <button class="back-btn" id="start-over-results">Start Over</button>
+      </div>
+    </header>
+    <div class="centered-content">
+      <div class="result-card">
+        <div class="result-header">
+          <div class="intensity-badge" id="result-intensity-badge">5</div>
+          <div>
+            <div class="result-title" id="result-muscle-name">Muscle Name</div>
+            <div class="result-subtitle" id="result-region-name">Region</div>
+          </div>
+        </div>
+        
+        <div class="assessment-box">
+          <div class="title">📋 Assessment</div>
+          <div class="text" id="result-assessment"></div>
+        </div>
+        
+        <div class="result-section">
+          <div class="result-label">Likely Condition</div>
+          <div class="result-value" id="result-condition"></div>
+        </div>
+        
+        <div class="result-section">
+          <div class="result-label">Typical Pain Pattern</div>
+          <div class="result-value" id="result-pain-pattern"></div>
+        </div>
+        
+        <div class="result-section">
+          <div class="result-label">What Usually Makes It Worse</div>
+          <div class="result-value" id="result-aggravating"></div>
+        </div>
+      </div>
+      
+      <div class="disclaimer">
+        <div class="disclaimer-title">⚠️ Important Disclaimer</div>
+        <div class="disclaimer-text">
+          This assessment is for educational purposes only and is not a medical diagnosis. 
+          If pain persists, worsens, or is severe, please consult a healthcare professional.
+        </div>
+      </div>
+      
+      <button class="btn btn-primary" id="to-solutions">View Self-Care Solutions →</button>
+      <button class="btn btn-secondary" id="start-over-results-2">Start Over</button>
+    </div>
+  </div>
+
+  <!-- Screen 6: Solutions -->
+  <div id="screen-solutions" class="screen">
+    <header class="header">
+      <div class="header-content">
+        <button class="back-btn" id="back-to-results">← Back</button>
+        <span class="logo">Self-Care</span>
+        <button class="back-btn" id="start-over-solutions">Start Over</button>
+      </div>
+    </header>
+    <div class="centered-content">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Recommended Self-Care</h2>
+          <p class="card-subtitle" id="solutions-subtitle">Based on your assessment</p>
+        </div>
+        
+        <div class="selfcare-box" id="acute-care" style="display:none;">
+          <div class="selfcare-title">🧊 For Acute Pain (Recent Injury)</div>
+          <div class="selfcare-text">
+            <strong>RICE Protocol for the first 48-72 hours:</strong><br>
+            • <strong>R</strong>est - Avoid activities that cause pain<br>
+            • <strong>I</strong>ce - Apply ice 15-20 min every 2-3 hours<br>
+            • <strong>C</strong>ompress - Use elastic bandage if swelling present<br>
+            • <strong>E</strong>levate - Keep area elevated when possible
+          </div>
+        </div>
+
+        <div class="selfcare-box" id="chronic-care" style="display:none;">
+          <div class="selfcare-title">🔥 For Chronic/Gradual Pain</div>
+          <div class="selfcare-text">
+            • Apply heat for 15-20 minutes to relax tight muscles<br>
+            • Focus on gentle stretching daily<br>
+            • Consider activity modification<br>
+            • Address underlying posture or movement patterns
+          </div>
+        </div>
+        
+        <div class="selfcare-box">
+          <div class="selfcare-title">💚 General Recommendations</div>
+          <div class="selfcare-text" id="solutions-selfcare"></div>
+        </div>
+        
+        <p class="panel-title">Stretches & Exercises</p>
+        <div id="solutions-stretches"></div>
+        
+        <button class="btn btn-primary" id="final-start-over">Start Over</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // ============================================================================
+    // DATA
+    // ============================================================================
+    
+    const REGIONS = {
+      "Head & Face": { keywords: ["frontalis", "occipitalis", "temporalis", "masseter", "pterygoid", "orbicularis", "zygomaticus", "bucinator", "procerus", "nasalis", "mentalis", "risorius", "depressor", "levator labii", "levator anguli", "corrugator", "epicranial", "auricular", "buccinator", "occipitofrontalis"], cameraPos: [0, 1.8, 0.8], target: [0, 1.7, 0] },
+      "Neck": { keywords: ["sternocleidomastoid", "scalenus", "scalene", "platysma", "omohyoid", "sternohyoid", "thyrohyoid", "sternothyroid", "digastric", "mylohyoid", "geniohyoid", "stylohyoid", "longus capitis", "longus colli", "rectus capitis", "pharyngeal", "constrictor", "thyro", "crico", "arytenoid", "hyoid"], cameraPos: [0, 1.5, 1], target: [0, 1.4, 0] },
+      "Shoulder": { keywords: ["deltoid", "supraspinatus", "infraspinatus", "subscapularis", "teres", "trapezius", "levator scapulae", "rhomboid", "serratus anterior", "subacromial", "subdeltoid"], cameraPos: [0.8, 1.3, 1.2], target: [0.3, 1.2, 0] },
+      "Upper Arm": { keywords: ["biceps brachii", "triceps brachii", "brachialis", "coracobrachialis", "biceps", "triceps"], cameraPos: [1, 1.1, 1], target: [0.5, 1, 0] },
+      "Forearm": { keywords: ["brachioradialis", "pronator", "supinator", "flexor carpi", "extensor carpi", "flexor digitorum", "extensor digitorum", "palmaris", "anconeus", "radialis", "ulnaris"], cameraPos: [1.2, 0.9, 0.8], target: [0.6, 0.8, 0] },
+      "Wrist & Hand": { keywords: ["pollicis", "opponens", "interossei muscles of hand", "lumbrical muscles of hand", "digiti minimi of hand", "thenar", "hypothenar", "adductor pollicis", "abductor pollicis", "flexor pollicis brevis", "palmar"], cameraPos: [1.3, 0.6, 0.6], target: [0.7, 0.5, 0] },
+      "Chest": { keywords: ["pectoralis", "subclavius", "intercostal", "transversus thoracis", "diaphragm", "pectoral"], cameraPos: [0, 1.2, 1.5], target: [0, 1.1, 0] },
+      "Upper Back": { keywords: ["latissimus dorsi", "latissimus", "serratus posterior", "splenius", "semispinalis", "spinalis thoracis", "longissimus thoracis", "iliocostalis thoracis", "erector spinae", "rhomboid"], cameraPos: [0, 1.2, -1.5], target: [0, 1.1, 0] },
+      "Lower Back": { keywords: ["multifidus", "quadratus lumborum", "iliocostalis lumborum", "longissimus lumborum", "interspinales", "rotatores", "erector", "lumbar", "psoas"], cameraPos: [0, 0.9, -1.5], target: [0, 0.85, 0] },
+      "Abdomen": { keywords: ["rectus abdominis", "abdominal oblique", "transversus abdominis", "pyramidalis", "linea alba", "oblique muscle", "abdominis"], cameraPos: [0, 0.95, 1.5], target: [0, 0.9, 0] },
+      "Hip & Pelvis": { keywords: ["gluteus", "gluteal", "piriformis", "obturator", "gemellus", "quadratus femoris", "iliacus", "psoas", "tensor fasciae", "coccygeus", "levator ani", "inguinal", "iliac"], cameraPos: [0.5, 0.7, 1.3], target: [0.2, 0.65, 0] },
+      "Thigh": { keywords: ["rectus femoris", "vastus", "sartorius", "biceps femoris", "semitendinosus", "semimembranosus", "adductor", "gracilis", "pectineus", "iliotibial", "quadriceps", "hamstring", "femoris"], cameraPos: [0.4, 0.5, 1.5], target: [0.15, 0.45, 0] },
+      "Knee": { keywords: ["patellar", "popliteus", "articularis genus", "patella"], cameraPos: [0.3, 0.3, 1.2], target: [0.1, 0.25, 0] },
+      "Lower Leg": { keywords: ["gastrocnemius", "soleus", "tibialis", "fibularis", "peroneus", "plantaris", "calcaneal", "achilles", "triceps surae", "popliteus"], cameraPos: [0.3, 0.15, 1.3], target: [0.1, 0.1, 0] },
+      "Ankle & Foot": { keywords: ["digitorum brevis", "hallucis", "abductor hallucis", "interossei muscles of foot", "quadratus plantae", "plantar", "extensor digitorum brevis", "flexor digitorum brevis", "abductor digiti minimi", "foot"], cameraPos: [0.3, 0.05, 1], target: [0.1, 0, 0] }
+    };
+
+    const CAUSES = [
+      { id: "sudden", label: "Sudden movement or injury", type: "acute" },
+      { id: "repetitive", label: "Repetitive activity (sports, work, exercise)", type: "overuse" },
+      { id: "gradual", label: "Started gradually, no specific event", type: "chronic" },
+      { id: "posture", label: "After prolonged sitting, standing, or poor posture", type: "postural" },
+      { id: "sleep", label: "After sleeping in an awkward position", type: "postural" },
+      { id: "unknown", label: "Don't know / Other", type: "unknown" }
+    ];
+
+    const PHYSIO_DATA = {
+      "Head & Face": {
+        muscles: [
+          { name: "Masseter / Jaw", keywords: ["masseter"], condition: "TMJ Dysfunction", painPattern: "Jaw, ear, temple area", aggravatingFactors: "Chewing, yawning, talking, stress/teeth grinding", selfCare: "Gentle jaw stretches, warm compress, relaxation techniques, avoid hard foods, reduce stress", stretches: [{ name: "Jaw Relaxation", description: "Let jaw hang open slightly, place tongue on roof of mouth, breathe deeply for 30 seconds. Repeat 3-5 times." }, { name: "Resisted Opening", description: "Place thumb under chin, open mouth slowly against light resistance, hold 5 seconds. Repeat 10 times." }] },
+          { name: "Temporalis / Temple", keywords: ["temporalis"], condition: "Tension Headache", painPattern: "Temple, side of head, behind eye", aggravatingFactors: "Stress, teeth clenching, prolonged concentration, screen work", selfCare: "Temple massage, jaw relaxation, stay hydrated, stress management, reduce screen time", stretches: [{ name: "Temple Massage", description: "Use fingertips to massage temples in slow circular motions for 1-2 minutes. Apply moderate pressure." }] }
+        ]
+      },
+      "Neck": {
+        muscles: [
+          { name: "Sternocleidomastoid (SCM)", keywords: ["sternocleidomastoid"], condition: "SCM Strain / Trigger Points", painPattern: "Side of neck, behind ear, forehead, can cause headaches", aggravatingFactors: "Turning head, looking up, prolonged screen use, sleeping position", selfCare: "Gentle neck stretches, chin tucks, heat therapy, posture correction, proper pillow height", stretches: [{ name: "Ear to Shoulder Stretch", description: "Gently tilt ear toward shoulder until you feel a stretch. Hold 30 seconds each side." }, { name: "Chin Tuck", description: "Pull chin straight back (making a 'double chin'), hold 5 seconds. Repeat 10 times." }] },
+          { name: "Upper Trapezius", keywords: ["trapezius"], condition: "Upper Trap Strain", painPattern: "Base of skull, top of shoulder, can refer to temple", aggravatingFactors: "Shrugging, carrying bags, stress, computer work", selfCare: "Upper trap stretch, shoulder rolls, stress reduction, heat therapy", stretches: [{ name: "Upper Trap Stretch", description: "Tilt ear to shoulder while holding opposite arm behind back. Hold 30 seconds each side." }] },
+          { name: "Levator Scapulae", keywords: ["levator scapulae"], condition: "Levator Scapulae Syndrome", painPattern: "Angle where neck meets shoulder, inner shoulder blade", aggravatingFactors: "Looking over shoulder, poor sleeping position, phone cradling", selfCare: "Levator stretch, shoulder blade squeezes, improve sleeping position", stretches: [{ name: "Levator Stretch", description: "Look down toward your armpit, gently pull head with same-side hand. Hold 30 seconds each side." }] }
+        ]
+      },
+      "Shoulder": {
+        muscles: [
+          { name: "Deltoid", keywords: ["deltoid"], condition: "Deltoid Strain / Bursitis", painPattern: "Side of shoulder, outer upper arm", aggravatingFactors: "Lifting arm to side, carrying with arm away from body", selfCare: "Cross-body stretch, pendulum exercises, ice for acute pain, rest", stretches: [{ name: "Cross-Body Stretch", description: "Pull arm across chest with other hand. Hold 30 seconds. Keep shoulder down." }, { name: "Pendulum Exercise", description: "Lean forward, let arm hang and swing in small circles for 30 seconds." }] },
+          { name: "Rotator Cuff", keywords: ["supraspinatus", "infraspinatus", "subscapularis", "teres"], condition: "Rotator Cuff Tendinopathy", painPattern: "Top or front of shoulder, may radiate down arm, worse at night", aggravatingFactors: "Overhead reaching, sleeping on affected side, lifting", selfCare: "Avoid overhead activities, pendulum exercises, doorway stretch", stretches: [{ name: "Doorway Stretch", description: "Place forearm on doorframe at 90°, step through gently. Hold 30 seconds." }, { name: "Sleeper Stretch", description: "Lie on affected side, elbow bent 90°, push forearm toward floor. Hold 30 seconds." }] },
+          { name: "Rhomboids", keywords: ["rhomboid"], condition: "Rhomboid Strain", painPattern: "Between spine and shoulder blade", aggravatingFactors: "Prolonged reaching forward, computer work, rounded posture", selfCare: "Doorway stretch, shoulder blade squeezes, posture correction", stretches: [{ name: "Thread the Needle", description: "On all fours, reach one arm under body and rotate. Hold 30 seconds each side." }] }
+        ]
+      },
+      "Upper Arm": {
+        muscles: [
+          { name: "Biceps", keywords: ["biceps brachii"], condition: "Biceps Tendinopathy", painPattern: "Front of shoulder and down front of arm", aggravatingFactors: "Lifting with palm up, curling motions, overhead reaching", selfCare: "Bicep wall stretch, rest from aggravating activities", stretches: [{ name: "Bicep Wall Stretch", description: "Place palm on wall behind you, arm straight, turn body away. Hold 30 seconds." }] },
+          { name: "Triceps", keywords: ["triceps brachii"], condition: "Triceps Strain", painPattern: "Back of upper arm, can refer to outer elbow", aggravatingFactors: "Pushing movements, straightening elbow against resistance", selfCare: "Overhead tricep stretch, rest from pushing exercises", stretches: [{ name: "Overhead Tricep Stretch", description: "Raise arm overhead, bend elbow, use other hand to push elbow. Hold 30 seconds." }] }
+        ]
+      },
+      "Forearm": {
+        muscles: [
+          { name: "Wrist Extensors", keywords: ["extensor carpi", "extensor digitorum"], condition: "Tennis Elbow", painPattern: "Outer elbow, can radiate down back of forearm", aggravatingFactors: "Gripping, typing, mouse use, lifting with palm down", selfCare: "Wrist extensor stretch, forearm massage, ergonomic setup", stretches: [{ name: "Wrist Extensor Stretch", description: "Arm straight, flex wrist down, apply gentle pressure with other hand. Hold 30 seconds." }] },
+          { name: "Wrist Flexors", keywords: ["flexor carpi", "palmaris", "flexor digitorum"], condition: "Golfer's Elbow", painPattern: "Inner elbow, can radiate down front of forearm", aggravatingFactors: "Gripping, wrist flexion, throwing, golf swing", selfCare: "Wrist flexor stretch, forearm massage, ice after activity", stretches: [{ name: "Wrist Flexor Stretch", description: "Arm straight, extend wrist back, apply gentle pressure. Hold 30 seconds." }] }
+        ]
+      },
+      "Wrist & Hand": {
+        muscles: [
+          { name: "Thumb Muscles", keywords: ["pollicis", "opponens"], condition: "De Quervain's Tenosynovitis", painPattern: "Thumb side of wrist, base of thumb", aggravatingFactors: "Gripping, pinching, texting, lifting", selfCare: "Thumb stretches, rest from gripping activities", stretches: [{ name: "Thumb Stretch", description: "Gently pull thumb back toward wrist, hold 30 seconds." }] },
+          { name: "Hand Intrinsics", keywords: ["interossei", "lumbrical"], condition: "Hand Muscle Strain", painPattern: "Deep in palm, between fingers", aggravatingFactors: "Fine motor tasks, typing, gripping", selfCare: "Finger stretches, hand massage, rest breaks", stretches: [{ name: "Finger Spread", description: "Spread fingers wide, hold 5 seconds, relax. Repeat 10 times." }] }
+        ]
+      },
+      "Chest": {
+        muscles: [
+          { name: "Pectoralis Major", keywords: ["pectoralis major", "sternocostal", "clavicular head of pectoralis"], condition: "Pec Strain", painPattern: "Chest, front of shoulder, can refer down arm", aggravatingFactors: "Pushing movements, bench press, hugging motions", selfCare: "Doorway stretch, corner stretch, avoid heavy pushing", stretches: [{ name: "Doorway Pec Stretch", description: "Arms on doorframe at 90°, step through. Hold 30 seconds." }] },
+          { name: "Intercostals", keywords: ["intercostal"], condition: "Intercostal Strain", painPattern: "Along rib, can wrap around chest", aggravatingFactors: "Deep breathing, coughing, sneezing, twisting", selfCare: "Gentle breathing exercises, avoid sudden twisting, rest", stretches: [{ name: "Side Stretch", description: "Arm overhead, lean gently to opposite side. Hold 30 seconds each side." }] }
+        ]
+      },
+      "Upper Back": {
+        muscles: [
+          { name: "Latissimus Dorsi", keywords: ["latissimus dorsi"], condition: "Lat Strain", painPattern: "Side of back, under armpit, can refer down arm", aggravatingFactors: "Pulling movements, swimming, climbing", selfCare: "Overhead lat stretch, child's pose, foam rolling", stretches: [{ name: "Overhead Lat Stretch", description: "Grasp something overhead, lean away to stretch the side. Hold 30 seconds." }] },
+          { name: "Thoracic Erectors", keywords: ["longissimus thoracis", "iliocostalis thoracis", "spinalis thoracis", "splenius", "semispinalis"], condition: "Upper Back Strain", painPattern: "Along mid-spine, may radiate around ribs", aggravatingFactors: "Prolonged sitting, bending forward, lifting", selfCare: "Cat-cow stretches, thoracic rotation, foam roller", stretches: [{ name: "Cat-Cow Stretch", description: "On all fours, arch back up, then down. Move slowly, 10 repetitions." }] }
+        ]
+      },
+      "Lower Back": {
+        muscles: [
+          { name: "Quadratus Lumborum (QL)", keywords: ["quadratus lumborum"], condition: "QL Strain", painPattern: "Deep one-sided low back pain, top of hip", aggravatingFactors: "Side bending, prolonged asymmetric sitting", selfCare: "Side-lying QL stretch, child's pose with reach", stretches: [{ name: "Side-Lying QL Stretch", description: "Lie on side, top leg behind, reach top arm overhead. Hold 30 seconds." }, { name: "Child's Pose Side Reach", description: "In child's pose, walk hands to one side. Hold 30 seconds each side." }] },
+          { name: "Lumbar Erectors", keywords: ["iliocostalis lumborum", "longissimus lumborum", "multifidus"], condition: "Lumbar Muscle Strain", painPattern: "Lower back, can refer to buttock or hip", aggravatingFactors: "Bending forward, lifting, prolonged sitting", selfCare: "Knee-to-chest stretch, cat-cow, child's pose", stretches: [{ name: "Knee to Chest", description: "Lie on back, pull one knee to chest, hold 30 seconds. Then other side." }, { name: "Child's Pose", description: "Kneel, sit back on heels, reach arms forward. Hold 1 minute." }] }
+        ]
+      },
+      "Abdomen": {
+        muscles: [
+          { name: "Rectus Abdominis", keywords: ["rectus abdominis"], condition: "Abdominal Strain", painPattern: "Front of abdomen", aggravatingFactors: "Sit-ups, crunches, coughing, sneezing", selfCare: "Rest from ab exercises, gentle stretching when pain-free", stretches: [{ name: "Cobra Stretch", description: "Lie face down, push upper body up keeping hips on floor. Hold 30 seconds." }] },
+          { name: "Obliques", keywords: ["abdominal oblique"], condition: "Oblique Strain", painPattern: "Side of abdomen, may wrap toward back", aggravatingFactors: "Rotating trunk, side bending, coughing", selfCare: "Rest from twisting movements, gentle side stretches", stretches: [{ name: "Seated Twist", description: "Sit tall, twist to one side, hold 30 seconds." }] }
+        ]
+      },
+      "Hip & Pelvis": {
+        muscles: [
+          { name: "Gluteus Maximus", keywords: ["gluteus maximus"], condition: "Gluteal Strain", painPattern: "Buttock, can refer to low back and thigh", aggravatingFactors: "Climbing stairs, standing from sitting, running", selfCare: "Figure-4 stretch, glute bridges for strengthening", stretches: [{ name: "Figure-4 Stretch", description: "Lie on back, cross ankle over opposite knee, pull thigh toward chest. Hold 30 seconds." }] },
+          { name: "Piriformis", keywords: ["piriformis"], condition: "Piriformis Syndrome", painPattern: "Deep in buttock, can radiate down back of leg", aggravatingFactors: "Sitting, climbing stairs, driving", selfCare: "Piriformis stretch, avoid sitting on wallet", stretches: [{ name: "Piriformis Stretch", description: "Lie on back, cross ankle over knee, pull thigh toward opposite shoulder. Hold 30 seconds." }] },
+          { name: "Hip Flexors (Iliopsoas)", keywords: ["iliacus", "psoas"], condition: "Hip Flexor Strain", painPattern: "Deep in groin, front of hip", aggravatingFactors: "Bringing knee to chest, running, prolonged sitting", selfCare: "Kneeling hip flexor stretch, strengthen glutes", stretches: [{ name: "Kneeling Hip Flexor", description: "Kneel on one knee, push hips forward. Hold 30 seconds each side." }] },
+          { name: "Gluteus Medius / IT Band", keywords: ["gluteus medius", "tensor fasciae", "iliotibial"], condition: "IT Band Syndrome", painPattern: "Side of hip, can extend down to knee", aggravatingFactors: "Walking, running, lying on affected side", selfCare: "IT band stretch, clamshells, foam rolling", stretches: [{ name: "IT Band Stretch", description: "Cross one leg behind the other, lean away. Hold 30 seconds." }] }
+        ]
+      },
+      "Thigh": {
+        muscles: [
+          { name: "Quadriceps", keywords: ["rectus femoris", "vastus"], condition: "Quad Strain", painPattern: "Front of thigh from hip to knee", aggravatingFactors: "Kicking, running, jumping, stairs", selfCare: "Quad stretch, foam rolling, avoid aggravating activities", stretches: [{ name: "Standing Quad Stretch", description: "Stand, pull heel toward buttock, keep knees together. Hold 30 seconds each." }] },
+          { name: "Hamstrings", keywords: ["biceps femoris", "semitendinosus", "semimembranosus"], condition: "Hamstring Strain", painPattern: "Back of thigh from buttock to behind knee", aggravatingFactors: "Sprinting, sudden acceleration, kicking", selfCare: "Hamstring stretches, avoid overstretching, gradual return", stretches: [{ name: "Standing Hamstring", description: "Place heel on chair/step, lean forward with straight back. Hold 30 seconds." }] },
+          { name: "Adductors (Groin)", keywords: ["adductor", "gracilis", "pectineus"], condition: "Groin Strain", painPattern: "Inner thigh from groin to inner knee", aggravatingFactors: "Quick direction changes, kicking, spreading legs", selfCare: "Butterfly stretch, gentle adductor stretching", stretches: [{ name: "Butterfly Stretch", description: "Sit with soles of feet together, gently push knees toward floor. Hold 30 seconds." }] }
+        ]
+      },
+      "Knee": {
+        muscles: [
+          { name: "Patellar Tendon", keywords: ["patellar"], condition: "Patellar Tendinopathy (Jumper's Knee)", painPattern: "Just below kneecap", aggravatingFactors: "Jumping, landing, running, stairs (especially down)", selfCare: "Quad stretching, eccentric exercises, reduce jumping", stretches: [{ name: "Quad Stretch", description: "Stand, pull heel to buttock. Hold 30 seconds each leg." }, { name: "Eccentric Squat", description: "Slow controlled squat (3 seconds down), stand up normally. 15 reps." }] },
+          { name: "Popliteus", keywords: ["popliteus"], condition: "Popliteus Tendinopathy", painPattern: "Back of knee, slightly toward outer side", aggravatingFactors: "Going downhill, descending stairs, pivoting", selfCare: "Calf stretching, hamstring stretching, avoid downhill", stretches: [{ name: "Calf Stretch", description: "Wall stretch with back leg straight, lean forward. Hold 30 seconds." }] }
+        ]
+      },
+      "Lower Leg": {
+        muscles: [
+          { name: "Gastrocnemius (Calf)", keywords: ["gastrocnemius"], condition: "Calf Strain", painPattern: "Upper calf, can feel like someone kicked you", aggravatingFactors: "Pushing off, jumping, sudden acceleration", selfCare: "Calf stretch (knee straight), gentle heel raises", stretches: [{ name: "Wall Calf Stretch", description: "Against wall, back leg straight, lean forward. Hold 30 seconds each." }] },
+          { name: "Soleus (Deep Calf)", keywords: ["soleus"], condition: "Soleus Strain / Achilles Issues", painPattern: "Deep in calf, toward the Achilles tendon", aggravatingFactors: "Walking, prolonged standing, running", selfCare: "Calf stretch with bent knee, eccentric heel drops", stretches: [{ name: "Bent Knee Calf Stretch", description: "Same as wall stretch but bend back knee. Hold 30 seconds." }] },
+          { name: "Tibialis Anterior (Shin)", keywords: ["tibialis"], condition: "Shin Splints", painPattern: "Front of shin, top of foot when severe", aggravatingFactors: "Running, walking uphill, new runners", selfCare: "Shin stretch, toe raises, proper footwear", stretches: [{ name: "Kneeling Shin Stretch", description: "Kneel on padded surface, sit back on heels with toes pointed. Hold 30 seconds." }] },
+          { name: "Achilles Tendon", keywords: ["calcaneal", "achilles", "plantaris"], condition: "Achilles Tendinopathy", painPattern: "Back of heel, lower calf, stiff in morning", aggravatingFactors: "Running, jumping, walking after rest", selfCare: "Calf stretches, eccentric heel drops, proper footwear", stretches: [{ name: "Eccentric Heel Drop", description: "Stand on step, rise on toes, slowly lower heel below step level. 15 times." }] }
+        ]
+      },
+      "Ankle & Foot": {
+        muscles: [
+          { name: "Plantar Fascia / Heel", keywords: ["digitorum brevis", "hallucis brevis", "quadratus plantae"], condition: "Plantar Fasciitis", painPattern: "Bottom of heel, along arch, worst with first morning steps", aggravatingFactors: "First steps after rest, prolonged standing, barefoot on hard surfaces", selfCare: "Calf stretches, plantar fascia stretch, frozen bottle roll, arch support", stretches: [{ name: "Plantar Fascia Stretch", description: "Sit, cross affected foot over knee, pull toes back toward shin. Hold 30 seconds." }, { name: "Frozen Bottle Roll", description: "Roll foot over frozen water bottle for 5 minutes." }] },
+          { name: "Foot Intrinsics / Arch", keywords: ["interossei muscles of foot", "lumbrical muscles of foot", "abductor"], condition: "Foot Muscle Strain", painPattern: "Along arch, top of foot, between toes", aggravatingFactors: "Walking, running, prolonged standing, poor footwear", selfCare: "Toe stretches, arch rolling, towel scrunches, proper footwear", stretches: [{ name: "Toe Yoga", description: "Try to lift big toe while pressing other toes down, then reverse. 10 times each." }, { name: "Arch Roll", description: "Roll foot over tennis ball for 2 minutes." }] }
+        ]
+      }
+    };
+
+    const PAIN_LEVELS = [
+      { level: 1, label: "Minimal", color: "#34c759" },
+      { level: 2, label: "Mild", color: "#30d158" },
+      { level: 3, label: "Slight", color: "#a8d94c" },
+      { level: 4, label: "Noticeable", color: "#ffd60a" },
+      { level: 5, label: "Moderate", color: "#ff9f0a" },
+      { level: 6, label: "Uncomfortable", color: "#ff9500" },
+      { level: 7, label: "Significant", color: "#ff6b35" },
+      { level: 8, label: "Severe", color: "#ff453a" },
+      { level: 9, label: "Very Severe", color: "#e5383b" },
+      { level: 10, label: "Extreme", color: "#c41e3a" }
+    ];
+
+    // ============================================================================
+    // STATE
+    // ============================================================================
+    
+    let state = {
+      selectedRegion: null,
+      selectedMuscle: null,
+      selectedMuscleName: null,
+      painIntensity: 5,
+      selectedCause: null,
+      causeDescription: ''
+    };
+
+    // ============================================================================
+    // THREE.JS SETUP
+    // ============================================================================
+    
+    let scene, camera, renderer, controls, model;
+    let meshMap = {};
+    let raycaster, mouse;
+    let hoveredMesh = null;
+    let selectedMesh = null;
+
+    function initViewer() {
+      const container = document.getElementById('canvas-container');
+      if (!container) {
+        console.error('Canvas container not found');
+        return;
+      }
+      
+      console.log('Initializing viewer...');
+      
+      // Scene
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xe8e8ed);
+
+      // Camera
+      const aspect = container.clientWidth / container.clientHeight;
+      camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
+      camera.position.set(0, 1, 3);
+
+      // Renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(renderer.domElement);
+
+      // Controls
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.minDistance = 0.5;
+      controls.maxDistance = 5;
+      controls.target.set(0, 0.9, 0);
+
+      // Lighting
+      const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+      scene.add(ambient);
+
+      const main = new THREE.DirectionalLight(0xffffff, 0.8);
+      main.position.set(5, 10, 5);
+      scene.add(main);
+
+      const fill = new THREE.DirectionalLight(0xffffff, 0.4);
+      fill.position.set(-5, 5, -5);
+      scene.add(fill);
+
+      const back = new THREE.DirectionalLight(0xffffff, 0.3);
+      back.position.set(0, 5, -10);
+      scene.add(back);
+
+      // Raycaster
+      raycaster = new THREE.Raycaster();
+      mouse = new THREE.Vector2();
+
+      // Load model
+      console.log('Loading GLB model...');
+      const loader = new GLTFLoader();
+      loader.load(
+        'muscles_labels7.glb',
+        (gltf) => {
+          console.log('Model loaded successfully!');
+          model = gltf.scene;
+          
+          // Center model
+          const box = new THREE.Box3().setFromObject(model);
+          const center = box.getCenter(new THREE.Vector3());
+          model.position.sub(center);
+          model.position.y += 0.9;
+
+          // Process meshes
+          let meshCount = 0;
+          let regionMatches = {};
+          let unmatchedMeshes = [];
+          
+          model.traverse((child) => {
+            if (child.isMesh) {
+              meshCount++;
+              const hue = Math.random() * 0.1 + 0.0;
+              const color = new THREE.Color().setHSL(hue, 0.4, 0.65);
+              
+              child.material = new THREE.MeshStandardMaterial({
+                color: color,
+                roughness: 0.6,
+                metalness: 0.1,
+                side: THREE.DoubleSide  // Render both sides of mesh
+              });
+              
+              child.userData.originalColor = color.clone();
+              child.userData.muscleName = child.name;
+              child.userData.region = getRegionFromName(child.name);
+              
+              // Debug: track region assignments
+              if (child.userData.region) {
+                regionMatches[child.userData.region] = (regionMatches[child.userData.region] || 0) + 1;
+              } else {
+                unmatchedMeshes.push(child.name);
+              }
+              
+              meshMap[child.name] = child;
+            }
+          });
+
+          console.log(`Processed ${meshCount} meshes`);
+          console.log('Region matches:', regionMatches);
+          console.log('Unmatched meshes:', unmatchedMeshes.slice(0, 20), '... and', unmatchedMeshes.length - 20, 'more');
+          scene.add(model);
+          document.getElementById('loading').classList.add('hidden');
+        },
+        (progress) => {
+          const pct = Math.round((progress.loaded / progress.total) * 100);
+          document.getElementById('loading-text').textContent = `Loading anatomy model... ${pct}%`;
+        },
+        (error) => {
+          console.error('Error loading model:', error);
+          document.getElementById('loading-text').innerHTML = `
+            <span class="error-msg">
+              Error loading model.<br><br>
+              Make sure <strong>muscles_labels7.glb</strong> is in the same folder as this HTML file,<br>
+              and you're running a local server (python3 -m http.server 8000)
+            </span>
+          `;
+        }
+      );
+
+      // Event listeners
+      renderer.domElement.addEventListener('click', onCanvasClick);
+      renderer.domElement.addEventListener('mousemove', onCanvasHover);
+      window.addEventListener('resize', onResize);
+
+      animate();
+    }
+
+    function getRegionFromName(name) {
+      const lower = name.toLowerCase();
+      for (const [region, data] of Object.entries(REGIONS)) {
+        for (const kw of data.keywords) {
+          if (lower.includes(kw.toLowerCase())) return region;
+        }
+      }
+      return null;
+    }
+
+    function getMuscleData(name, region) {
+      const regionData = PHYSIO_DATA[region];
+      if (!regionData) return null;
+      
+      const lower = name.toLowerCase();
+      
+      // Try to find match in our physio data
+      for (const muscle of regionData.muscles) {
+        for (const kw of muscle.keywords) {
+          if (lower.includes(kw.toLowerCase())) return muscle;
+        }
+      }
+      
+      // If no match, create a generic entry based on the actual mesh name
+      // This ensures we show the real muscle name instead of defaulting to first in list
+      const cleanName = formatMuscleName(name);
+      return {
+        name: cleanName,
+        condition: `${cleanName} strain or discomfort`,
+        painPattern: `Localized to the ${region.toLowerCase()} area`,
+        aggravatingFactors: `Activities that stress the ${region.toLowerCase()}`,
+        selfCare: `Rest the affected area, apply ice for acute pain (first 48-72 hours) or heat for chronic tightness. Gentle stretching when pain allows. Avoid activities that aggravate the pain.`,
+        stretches: regionData.muscles[0]?.stretches || []
+      };
+    }
+    
+    function formatMuscleName(name) {
+      // Remove .l or .r suffix
+      let formatted = name.replace(/\.[lr]$/i, '');
+      // Remove "muscle" suffix if present
+      formatted = formatted.replace(/\s*muscle$/i, '');
+      // Clean up other common suffixes
+      formatted = formatted.replace(/\s*bursa$/i, '');
+      // Handle parentheses (like "(Adductor minimus)")
+      formatted = formatted.replace(/[()]/g, '');
+      // Trim whitespace
+      formatted = formatted.trim();
+      return formatted;
+    }
+
+    function onCanvasHover(e) {
+      if (!renderer) return;
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const meshes = Object.values(meshMap);
+      const intersects = raycaster.intersectObjects(meshes, false);
+
+      // Reset previous hover
+      if (hoveredMesh && hoveredMesh !== selectedMesh) {
+        // Restore to either highlighted (if in selected region) or original color
+        const currentScreen = document.querySelector('.screen.active').id;
+        if (currentScreen === 'screen-focus' && hoveredMesh.userData.region === state.selectedRegion) {
+          hoveredMesh.material.color.setHex(0x60a5fa);
+          hoveredMesh.material.emissive.setHex(0x1e40af);
+          hoveredMesh.material.emissiveIntensity = 0.15;
+        } else {
+          hoveredMesh.material.color.copy(hoveredMesh.userData.originalColor);
+          hoveredMesh.material.emissive.setHex(0x000000);
+        }
+      }
+
+      if (intersects.length > 0) {
+        const mesh = intersects[0].object;
+        const region = mesh.userData.region;
+        const currentScreen = document.querySelector('.screen.active').id;
+        
+        // On focus screen, only allow hovering muscles in selected region
+        if (currentScreen === 'screen-focus') {
+          if (region === state.selectedRegion && mesh !== selectedMesh) {
+            hoveredMesh = mesh;
+            mesh.material.color.setHex(0x93c5fd);
+            mesh.material.emissive.setHex(0x1e40af);
+            mesh.material.emissiveIntensity = 0.3;
+            renderer.domElement.style.cursor = 'pointer';
+          } else {
+            hoveredMesh = null;
+            renderer.domElement.style.cursor = 'default';
+          }
+        } else {
+          // On body screen, allow hovering any muscle with a region
+          if (region && mesh !== selectedMesh) {
+            hoveredMesh = mesh;
+            mesh.material.color.setHex(0x93c5fd);
+            mesh.material.emissive.setHex(0x1e40af);
+            mesh.material.emissiveIntensity = 0.2;
+            renderer.domElement.style.cursor = 'pointer';
+          } else {
+            hoveredMesh = null;
+            renderer.domElement.style.cursor = 'default';
+          }
+        }
+      } else {
+        hoveredMesh = null;
+        if (renderer) renderer.domElement.style.cursor = 'default';
+      }
+    }
+
+    function onCanvasClick(e) {
+      if (!renderer) return;
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const meshes = Object.values(meshMap);
+      const intersects = raycaster.intersectObjects(meshes, false);
+
+      if (intersects.length > 0) {
+        const mesh = intersects[0].object;
+        const region = mesh.userData.region;
+        
+        if (region) {
+          const currentScreen = document.querySelector('.screen.active').id;
+          
+          if (currentScreen === 'screen-body') {
+            selectRegion(region);
+          } else if (currentScreen === 'screen-focus') {
+            // Only allow selecting muscles in the currently selected region
+            if (region === state.selectedRegion) {
+              selectMuscleFromModel(mesh);
+            }
+            // Silently ignore clicks on other regions
+          }
+        }
+      }
+    }
+
+    function selectMuscleFromModel(mesh) {
+      if (selectedMesh) {
+        selectedMesh.material.color.copy(selectedMesh.userData.originalColor);
+        selectedMesh.material.emissive.setHex(0x000000);
+      }
+      
+      selectedMesh = mesh;
+      mesh.material.color.setHex(0xff6b6b);
+      mesh.material.emissive.setHex(0xff0000);
+      mesh.material.emissiveIntensity = 0.3;
+      
+      const muscleData = getMuscleData(mesh.name, state.selectedRegion);
+      const displayName = muscleData ? muscleData.name : formatMuscleName(mesh.name);
+      
+      state.selectedMuscleName = mesh.name;
+      state.selectedMuscle = muscleData;
+      
+      const indicator = document.getElementById('muscle-indicator-focus');
+      document.getElementById('indicator-name-focus').textContent = displayName;
+      indicator.classList.add('visible');
+    }
+
+    function selectRegion(region) {
+      state.selectedRegion = region;
+      
+      document.querySelectorAll('.region-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.region === region);
+      });
+      
+      // Update focus screen title before switching
+      document.getElementById('focus-region-title').textContent = region;
+      document.getElementById('focus-instruction').textContent = `Click on the specific ${region.toLowerCase()} muscle that hurts`;
+      
+      // Show the overlay again
+      document.getElementById('focus-overlay').classList.remove('hidden');
+      
+      // Hide the muscle indicator
+      document.getElementById('muscle-indicator-focus').classList.remove('visible');
+      
+      // Go to focus screen first (this moves the canvas)
+      goToScreen('focus');
+      
+      // Small delay to allow canvas to be moved and resized, then zoom
+      setTimeout(() => {
+        zoomToRegion(region);
+      }, 100);
+    }
+
+    function zoomToRegion(region) {
+      const regionData = REGIONS[region];
+      if (!regionData) return;
+      
+      const [x, y, z] = regionData.cameraPos;
+      const [tx, ty, tz] = regionData.target;
+      
+      animateCamera({ x, y, z }, { x: tx, y: ty, z: tz });
+      highlightRegion(region);
+    }
+
+    function highlightRegion(region) {
+      Object.values(meshMap).forEach((mesh) => {
+        if (mesh.userData.region === region) {
+          // Highlight muscles in the selected region
+          mesh.material.color.setHex(0x60a5fa);
+          mesh.material.emissive.setHex(0x1e40af);
+          mesh.material.emissiveIntensity = 0.15;
+          mesh.material.transparent = false;
+          mesh.material.opacity = 1;
+          mesh.renderOrder = 1;  // Render on top
+        } else {
+          // Dim other muscles
+          mesh.material.color.copy(mesh.userData.originalColor);
+          mesh.material.emissive.setHex(0x000000);
+          mesh.material.transparent = true;
+          mesh.material.opacity = 0.3;
+          mesh.renderOrder = 0;
+        }
+      });
+    }
+
+    function resetHighlights() {
+      Object.values(meshMap).forEach((mesh) => {
+        mesh.material.color.copy(mesh.userData.originalColor);
+        mesh.material.emissive.setHex(0x000000);
+        mesh.material.transparent = false;
+        mesh.material.opacity = 1;
+        mesh.renderOrder = 0;
+      });
+      selectedMesh = null;
+    }
+
+    function animateCamera(targetPos, targetLookAt) {
+      const startPos = { x: camera.position.x, y: camera.position.y, z: camera.position.z };
+      const startTarget = { x: controls.target.x, y: controls.target.y, z: controls.target.z };
+      const duration = 800;
+      const startTime = Date.now();
+      
+      function update() {
+        const elapsed = Date.now() - startTime;
+        const t = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        
+        camera.position.x = startPos.x + (targetPos.x - startPos.x) * eased;
+        camera.position.y = startPos.y + (targetPos.y - startPos.y) * eased;
+        camera.position.z = startPos.z + (targetPos.z - startPos.z) * eased;
+        
+        controls.target.x = startTarget.x + (targetLookAt.x - startTarget.x) * eased;
+        controls.target.y = startTarget.y + (targetLookAt.y - startTarget.y) * eased;
+        controls.target.z = startTarget.z + (targetLookAt.z - startTarget.z) * eased;
+        
+        if (t < 1) requestAnimationFrame(update);
+      }
+      update();
+    }
+
+    function resetZoom() {
+      animateCamera({ x: 0, y: 1, z: 3 }, { x: 0, y: 0.9, z: 0 });
+      resetHighlights();
+      document.getElementById('muscle-indicator').classList.remove('visible');
+      document.getElementById('muscle-indicator-focus').classList.remove('visible');
+    }
+
+    function onResize() {
+      // Find which container currently has the canvas
+      let container = document.getElementById('canvas-container');
+      if (document.getElementById('screen-focus').classList.contains('active')) {
+        container = document.getElementById('canvas-container-focus');
+      }
+      
+      if (!container || !camera || !renderer) return;
+      
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      
+      if (width > 0 && height > 0) {
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (controls) controls.update();
+      if (renderer && scene && camera) renderer.render(scene, camera);
+    }
+
+    // ============================================================================
+    // UI SETUP
+    // ============================================================================
+    
+    function initRegionButtons() {
+      const container = document.getElementById('region-buttons');
+      Object.keys(REGIONS).forEach(region => {
+        const btn = document.createElement('button');
+        btn.className = 'region-btn';
+        btn.dataset.region = region;
+        btn.textContent = region;
+        btn.addEventListener('click', () => selectRegion(region));
+        container.appendChild(btn);
+      });
+    }
+
+    function initCausesList() {
+      const container = document.getElementById('cause-list');
+      container.innerHTML = '';
+      CAUSES.forEach(cause => {
+        const item = document.createElement('div');
+        item.className = 'cause-item';
+        item.innerHTML = `
+          <div class="radio"></div>
+          <span class="label">${cause.label}</span>
+        `;
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.cause-item').forEach(i => i.classList.remove('selected'));
+          item.classList.add('selected');
+          state.selectedCause = cause;
+        });
+        container.appendChild(item);
+      });
+    }
+
+    // ============================================================================
+    // SCREEN NAVIGATION
+    // ============================================================================
+    
+    function goToScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + screenId).classList.add('active');
+
+      // Move the canvas to the appropriate container
+      if (screenId === 'body' && renderer) {
+        const container = document.getElementById('canvas-container');
+        if (container && !container.contains(renderer.domElement)) {
+          container.appendChild(renderer.domElement);
+          onResize();
+        }
+      } else if (screenId === 'focus' && renderer) {
+        const container = document.getElementById('canvas-container-focus');
+        if (container && !container.contains(renderer.domElement)) {
+          container.appendChild(renderer.domElement);
+          onResize();
+        }
+      }
+
+      if (screenId === 'intensity') setupIntensityScreen();
+      if (screenId === 'causes') setupCausesScreen();
+      if (screenId === 'results') setupResultsScreen();
+      if (screenId === 'solutions') setupSolutionsScreen();
+    }
+
+    function resetFlow() {
+      state = {
+        selectedRegion: null,
+        selectedMuscle: null,
+        selectedMuscleName: null,
+        painIntensity: 5,
+        selectedCause: null,
+        causeDescription: ''
+      };
+      resetZoom();
+      resetHighlights();
+      document.querySelectorAll('.region-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.cause-item').forEach(item => item.classList.remove('selected'));
+      document.getElementById('cause-description').value = '';
+      goToScreen('body');
+    }
+
+    // ============================================================================
+    // SCREEN SETUP FUNCTIONS
+    // ============================================================================
+    
+    function setupIntensityScreen() {
+      document.getElementById('intensity-region').textContent = state.selectedRegion;
+      document.getElementById('intensity-muscle').textContent = state.selectedMuscle?.name || formatMuscleName(state.selectedMuscleName);
+      
+      const slider = document.getElementById('pain-slider');
+      slider.value = state.painIntensity;
+      updatePainDisplay();
+    }
+
+    function updatePainDisplay() {
+      const level = PAIN_LEVELS[state.painIntensity - 1];
+      document.getElementById('pain-number').textContent = state.painIntensity;
+      document.getElementById('pain-number').style.background = level.color;
+      document.getElementById('pain-label').textContent = level.label;
+    }
+
+    function setupCausesScreen() {
+      document.getElementById('causes-region').textContent = state.selectedRegion;
+      document.getElementById('causes-muscle').textContent = state.selectedMuscle?.name || formatMuscleName(state.selectedMuscleName);
+      document.getElementById('causes-intensity').textContent = state.painIntensity + '/10';
+      initCausesList();
+    }
+
+    function setupResultsScreen() {
+      state.causeDescription = document.getElementById('cause-description').value;
+      
+      const muscle = state.selectedMuscle;
+      const level = PAIN_LEVELS[state.painIntensity - 1];
+      const cause = state.selectedCause;
+      
+      document.getElementById('result-intensity-badge').textContent = state.painIntensity;
+      document.getElementById('result-intensity-badge').style.background = level.color;
+      document.getElementById('result-muscle-name').textContent = muscle?.name || formatMuscleName(state.selectedMuscleName);
+      document.getElementById('result-region-name').textContent = state.selectedRegion;
+      document.getElementById('result-condition').textContent = muscle?.condition || 'Muscle discomfort';
+      document.getElementById('result-pain-pattern').textContent = muscle?.painPattern || 'Localized to the affected area';
+      document.getElementById('result-aggravating').textContent = muscle?.aggravatingFactors || 'Activities that stress this area';
+      
+      const assessment = generateAssessment(muscle, cause, state.painIntensity);
+      document.getElementById('result-assessment').textContent = assessment;
+    }
+
+    function generateAssessment(muscle, cause, intensity) {
+      const condition = muscle?.condition || 'muscle discomfort';
+      let assessment = '';
+      
+      if (cause?.type === 'acute') {
+        assessment = `Based on your report of a sudden movement or injury, this appears to be an acute ${condition.toLowerCase()}. `;
+        if (intensity >= 7) {
+          assessment += 'Given the high pain level, rest is important. Use ice for the first 48-72 hours and avoid activities that caused the injury.';
+        } else {
+          assessment += 'The moderate pain level suggests it may heal with proper rest and care.';
+        }
+      } else if (cause?.type === 'overuse') {
+        assessment = `This appears to be an overuse injury, commonly seen with ${condition.toLowerCase()}. `;
+        assessment += 'Consider reducing the intensity of the aggravating activity. Gradual strengthening often helps prevent recurrence.';
+      } else if (cause?.type === 'chronic') {
+        assessment = `A gradual onset suggests this may be a chronic condition related to ${condition.toLowerCase()}. `;
+        assessment += 'This often responds well to consistent stretching and addressing underlying factors like posture.';
+      } else if (cause?.type === 'postural') {
+        assessment = `The onset pattern suggests postural factors contributing to ${condition.toLowerCase()}. `;
+        assessment += 'Focus on improving your positioning and regular stretching.';
+      } else {
+        assessment = `Based on your symptoms, this may be related to ${condition.toLowerCase()}. `;
+        assessment += 'The stretches and self-care recommendations can help. If symptoms persist, consider seeing a healthcare professional.';
+      }
+      
+      return assessment;
+    }
+
+    function setupSolutionsScreen() {
+      const muscle = state.selectedMuscle;
+      const cause = state.selectedCause;
+      
+      document.getElementById('solutions-subtitle').textContent = `For ${muscle?.name || formatMuscleName(state.selectedMuscleName)}`;
+      document.getElementById('solutions-selfcare').textContent = muscle?.selfCare || 'Rest the affected area, apply ice for acute pain or heat for chronic tightness.';
+      
+      const acuteCare = document.getElementById('acute-care');
+      const chronicCare = document.getElementById('chronic-care');
+      
+      if (cause?.type === 'acute') {
+        acuteCare.style.display = 'block';
+        chronicCare.style.display = 'none';
+      } else if (cause?.type === 'chronic' || cause?.type === 'overuse' || cause?.type === 'postural') {
+        acuteCare.style.display = 'none';
+        chronicCare.style.display = 'block';
+      } else {
+        acuteCare.style.display = 'none';
+        chronicCare.style.display = 'none';
+      }
+      
+      const stretchesDiv = document.getElementById('solutions-stretches');
+      stretchesDiv.innerHTML = '';
+      
+      if (muscle?.stretches) {
+        muscle.stretches.forEach(stretch => {
+          const card = document.createElement('div');
+          card.className = 'stretch-card';
+          card.innerHTML = `
+            <div class="stretch-name">${stretch.name}</div>
+            <div class="stretch-description">${stretch.description}</div>
+          `;
+          stretchesDiv.appendChild(card);
+        });
+      }
+    }
+
+    // ============================================================================
+    // EVENT LISTENERS
+    // ============================================================================
+    
+    function setupEventListeners() {
+      // Navigation buttons
+      document.getElementById('confirm-btn-focus').addEventListener('click', () => {
+        if (state.selectedMuscle) goToScreen('intensity');
+      });
+      
+      document.getElementById('back-to-body').addEventListener('click', () => {
+        goToScreen('body');
+        resetZoom();
+      });
+      
+      document.getElementById('back-to-focus').addEventListener('click', () => goToScreen('focus'));
+      document.getElementById('back-to-intensity').addEventListener('click', () => goToScreen('intensity'));
+      document.getElementById('back-to-causes').addEventListener('click', () => goToScreen('causes'));
+      document.getElementById('back-to-results').addEventListener('click', () => goToScreen('results'));
+      
+      document.getElementById('to-causes').addEventListener('click', () => goToScreen('causes'));
+      document.getElementById('to-results').addEventListener('click', () => goToScreen('results'));
+      document.getElementById('to-solutions').addEventListener('click', () => goToScreen('solutions'));
+      
+      // Start over buttons
+      const startOverIds = ['start-over-focus', 'start-over-intensity', 'start-over-causes', 'start-over-results', 'start-over-results-2', 'start-over-solutions', 'final-start-over'];
+      startOverIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', resetFlow);
+      });
+      
+      // Pain slider
+      document.getElementById('pain-slider').addEventListener('input', (e) => {
+        state.painIntensity = parseInt(e.target.value);
+        updatePainDisplay();
+      });
+      
+      // Close button for focus overlay
+      document.getElementById('close-focus-overlay').addEventListener('click', () => {
+        document.getElementById('focus-overlay').classList.add('hidden');
+      });
+    }
+
+    // ============================================================================
+    // INIT
+    // ============================================================================
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM loaded, initializing...');
+      initViewer();
+      initRegionButtons();
+      setupEventListeners();
+    });
+  </script>
+</body>
+</html>
