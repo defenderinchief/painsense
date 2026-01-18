@@ -423,12 +423,10 @@
       font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
     }
     .muscle-list-panel h4 {
-      font-size: 13px;
+      font-size: 14px;
       color: #cbd5e1;
       margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
+      font-weight: 500;
     }
     .muscle-list {
       display: flex;
@@ -669,6 +667,32 @@
       font-size: 14px;
       color: #a0a0a0;
       line-height: 1.5;
+    }
+
+    /* Inspiring intro paragraph */
+    .inspiring-intro {
+      font-size: 15px;
+      color: #d0d0d0;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      padding: 12px 16px;
+      background: rgba(59, 130, 246, 0.1);
+      border-left: 3px solid #3b82f6;
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* Encouragement card */
+    .encouragement-card {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2a4a6e 100%) !important;
+      border-color: #60a5fa !important;
+    }
+    .encouragement-card h2 {
+      color: #ffffff;
+    }
+    .encouragement-card p {
+      font-size: 15px;
+      color: #e2e8f0;
+      line-height: 1.7;
     }
 
     /* Solution Card */
@@ -1187,7 +1211,7 @@
       </div>
       
       <div class="muscle-list-panel">
-        <h4>Muscles in this region</h4>
+        <h4>Tap on the body above or select from the list below</h4>
         <div class="muscle-list" id="muscle-list">
           <!-- Populated by JS -->
         </div>
@@ -1259,7 +1283,8 @@
     <div class="results-container">
       <!-- Solutions -->
       <div class="assessment-card">
-        <h2><span class="icon">💡</span> Recommended Self-Care</h2>
+        <h2><span class="icon">💪</span> Your Recovery Plan</h2>
+        <p class="inspiring-intro">Great news — this is a common issue that typically responds well to self-care. Here's your personalized action plan:</p>
         <div class="solution-list" id="solution-list">
           <!-- Populated by JS -->
         </div>
@@ -1267,17 +1292,24 @@
       
       <!-- Stretches -->
       <div class="assessment-card">
-        <h2><span class="icon">🧘</span> Recommended Stretches</h2>
+        <h2><span class="icon">🧘</span> Healing Exercises</h2>
+        <p class="inspiring-intro">These targeted stretches can help relieve your discomfort. Most people notice improvement within a few days of consistent practice.</p>
         <div id="stretches-list">
           <!-- Populated by JS -->
         </div>
       </div>
       
+      <!-- Encouragement -->
+      <div class="assessment-card encouragement-card">
+        <h2><span class="icon">✨</span> You've Got This!</h2>
+        <p>Consistency is key — try to do these exercises daily. Listen to your body, start gently, and gradually increase as you feel comfortable. Most muscle discomfort improves significantly within 1-2 weeks with proper care.</p>
+      </div>
+      
       <!-- Disclaimer -->
       <div class="assessment-card">
         <div class="disclaimer">
-          <h4>⚠️ Important Disclaimer</h4>
-          <p>This assessment is for educational purposes only and is not a medical diagnosis. If pain is severe, persistent, or worsening, please consult a healthcare professional. Seek immediate medical attention for sudden severe pain, numbness, weakness, or pain following an injury.</p>
+          <h4>⚠️ When to Seek Help</h4>
+          <p>While self-care works well for most muscle discomfort, please consult a healthcare professional if pain is severe, persistent beyond 2 weeks, or worsening. Seek immediate medical attention for sudden severe pain, numbness, weakness, or pain following an injury.</p>
         </div>
       </div>
       
@@ -2145,7 +2177,32 @@
         "splenius colli"
       ],
       "laymanDescription": "Deep back of neck",
-      "causes": [],
+      "causes": [
+        {
+          "causeId": "posture",
+          "causeLabel": "After prolonged screen work or forward head posture",
+          "condition": "Splenius Muscle Strain",
+          "solution": "Frequent breaks from screens, chin tucks, ergonomic workspace setup, neck rotation stretches, avoid looking down at phone"
+        },
+        {
+          "causeId": "sleeping",
+          "causeLabel": "After sleeping in an awkward position",
+          "condition": "Acute Neck Stiffness",
+          "solution": "Gentle neck rotation stretches, warm compress, supportive pillow, avoid sudden head movements, consider pillow height adjustment"
+        },
+        {
+          "causeId": "sudden",
+          "causeLabel": "Sudden head turn or whiplash-type movement",
+          "condition": "Splenius Strain/Spasm",
+          "solution": "Rest initially, ice for first 48 hours then heat, gentle range of motion as tolerated, avoid driving if unable to turn head"
+        },
+        {
+          "causeId": "unknown",
+          "causeLabel": "Don't know / Other",
+          "condition": "Neck Muscle Discomfort",
+          "solution": "Gentle neck stretches, improve posture, warm compress, if pain radiates to arms or causes headaches consult a doctor"
+        }
+      ],
       "stretches": [
         {
           "name": "Neck Rotation Stretch",
@@ -2672,22 +2729,47 @@
         "ulnar head of extensor carpi ulnaris"
       ],
       "laymanDescription": "Outer forearm near elbow",
-      "causes": [],
-      "stretches": [
+      "causes": [
         {
-          "name": "Wrist Extensor Stretch",
-          "description": "Extend right arm straight, palm facing down, use left hand to gently bend wrist down until you feel a stretch on top of forearm. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=gDxRn36D8Vc&t=120"
+          "causeId": "repetitive",
+          "causeLabel": "Repetitive gripping or twisting (tennis, tools, typing)",
+          "condition": "Lateral Epicondylitis (Tennis Elbow)",
+          "solution": "Rest from aggravating activities, eccentric wrist exercises, forearm strap/brace, ice after activity, gradual return to activity"
         },
+        {
+          "causeId": "overuse",
+          "causeLabel": "Overuse from manual work or new activity",
+          "condition": "Wrist Extensor Tendinopathy",
+          "solution": "Reduce workload, eccentric strengthening exercises, wrist extensor stretches, ergonomic tool handles, consider occupational modifications"
+        },
+        {
+          "causeId": "sudden",
+          "causeLabel": "Sudden forceful gripping or lifting",
+          "condition": "Acute Extensor Strain",
+          "solution": "Rest and ice initially, gentle stretching after 48-72 hours, gradual strengthening, avoid heavy gripping until pain-free"
+        },
+        {
+          "causeId": "unknown",
+          "causeLabel": "Don't know / Other",
+          "condition": "Lateral Forearm Pain",
+          "solution": "Wrist extensor stretches, eccentric exercises, avoid repetitive gripping, if pain persists beyond 2 weeks consult a physiotherapist"
+        }
+      ],
+      "stretches": [
         {
           "name": "Eccentric Wrist Extension",
           "description": "Hold light weight (1-2 lbs), palm down on table edge, slowly lower wrist down (3 seconds), use other hand to help lift back up. 15 reps, 3 sets.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=gDxRn36D8Vc&t=330"
+          "youtubeUrl": "https://www.youtube.com/watch?v=dsaOzSfsM24"
         },
         {
           "name": "Forearm Pronation/Supination",
           "description": "Hold hammer or weighted object, arm at side with elbow bent, slowly rotate forearm palm up then palm down. 15 reps each direction.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=gDxRn36D8Vc&t=465"
+          "youtubeUrl": "https://www.youtube.com/watch?v=VV7zsl6LafM"
+        },
+        {
+          "name": "Wrist Extensor Stretch",
+          "description": "Extend right arm straight, palm facing down, use left hand to gently bend wrist down until you feel a stretch on top of forearm. Hold 30 seconds.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=yj7QdBxvHzQ"
         }
       ]
     },
@@ -2705,22 +2787,47 @@
         "radial head of flexor digitorum superficialis"
       ],
       "laymanDescription": "Inner forearm near elbow",
-      "causes": [],
-      "stretches": [
+      "causes": [
         {
-          "name": "Wrist Flexor Stretch",
-          "description": "Extend right arm straight, palm facing up, use left hand to gently pull fingers back toward you. Feel stretch on inner forearm. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=CLjtSyuE11I&t=105"
+          "causeId": "repetitive",
+          "causeLabel": "Repetitive gripping, throwing, or swinging (golf, baseball)",
+          "condition": "Medial Epicondylitis (Golfer's Elbow)",
+          "solution": "Rest from aggravating activities, eccentric wrist flexion exercises, forearm strap, ice after activity, technique correction"
         },
+        {
+          "causeId": "overuse",
+          "causeLabel": "Overuse from climbing, lifting, or manual work",
+          "condition": "Wrist Flexor Tendinopathy",
+          "solution": "Reduce gripping activities, wrist flexor stretches, eccentric strengthening, ergonomic modifications, gradual return to activity"
+        },
+        {
+          "causeId": "sudden",
+          "causeLabel": "Sudden forceful wrist flexion or throwing",
+          "condition": "Acute Flexor Strain",
+          "solution": "Rest and ice initially, avoid gripping for 48-72 hours, gentle stretching when pain allows, progressive strengthening"
+        },
+        {
+          "causeId": "unknown",
+          "causeLabel": "Don't know / Other",
+          "condition": "Medial Forearm Pain",
+          "solution": "Wrist flexor stretches, prayer stretch, avoid repetitive gripping, if numbness in fingers develops consult a doctor"
+        }
+      ],
+      "stretches": [
         {
           "name": "Eccentric Wrist Flexion",
           "description": "Hold light weight, palm up on table edge, slowly lower wrist down (3 seconds), use other hand to help lift back up. 15 reps, 3 sets.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=CLjtSyuE11I&t=240"
+          "youtubeUrl": "https://www.youtube.com/watch?v=jBNNSCOSZLM"
         },
         {
           "name": "Prayer Stretch",
           "description": "Press palms together in front of chest in prayer position, slowly lower hands while keeping palms together until you feel a stretch. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=CLjtSyuE11I&t=375"
+          "youtubeUrl": "https://youtu.be/XnJu70SLsJk?si=_08Z2wXiF0cf_Dm7&t=5"
+        },
+        {
+          "name": "Wrist Flexor Stretch",
+          "description": "Extend right arm straight, palm facing up, use left hand to gently pull fingers back toward you. Feel stretch on inner forearm. Hold 30 seconds.",
+          "youtubeUrl": "https://youtu.be/i-JV2PsFzWA?si=qO7HomMJl1hrwL2h&t=5"
         }
       ]
     },
@@ -3685,22 +3792,53 @@
         "longissimus lumborum"
       ],
       "laymanDescription": "Muscles along lower spine",
-      "causes": [],
+      "causes": [
+        {
+          "causeId": "posture",
+          "causeLabel": "After prolonged sitting or standing",
+          "condition": "Postural Low Back Strain",
+          "solution": "Regular movement breaks, core strengthening, ergonomic chair setup, cat-cow stretches, avoid prolonged static positions"
+        },
+        {
+          "causeId": "sudden",
+          "causeLabel": "Sudden bending, lifting, or twisting",
+          "condition": "Acute Lumbar Strain",
+          "solution": "Rest initially but avoid complete bed rest, gentle walking, ice then heat, knee-to-chest stretches when tolerable, proper lifting technique"
+        },
+        {
+          "causeId": "repetitive",
+          "causeLabel": "Repetitive bending or lifting at work",
+          "condition": "Overuse Low Back Pain",
+          "solution": "Strengthen core muscles, proper lifting mechanics, regular stretching breaks, consider ergonomic assessment at work"
+        },
+        {
+          "causeId": "gradual",
+          "causeLabel": "Started gradually, no specific event",
+          "condition": "Chronic Low Back Tightness",
+          "solution": "Daily stretching routine, strengthen core and glutes, improve posture, stay active, consider yoga or Pilates"
+        },
+        {
+          "causeId": "unknown",
+          "causeLabel": "Don't know / Other",
+          "condition": "Low Back Discomfort",
+          "solution": "Gentle stretches (cat-cow, child's pose), stay active, avoid prolonged sitting, if pain radiates to legs or causes numbness consult a doctor"
+        }
+      ],
       "stretches": [
         {
           "name": "Knee to Chest",
           "description": "Lie on back, pull right knee to chest with both hands, keep other leg flat or bent. Hold 30 seconds. Repeat left side, then both knees together.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=GR2k9Bt34MQ&t=60"
+          "youtubeUrl": "https://www.youtube.com/watch?v=7xy99ZgARVA"
         },
         {
           "name": "Cat-Cow Stretch",
           "description": "On all fours, arch back up like a cat (tuck chin), then let belly drop and look up (cow). Move slowly between positions. 10-15 repetitions.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=GR2k9Bt34MQ&t=225"
+          "youtubeUrl": "https://www.youtube.com/watch?v=LIVJZZyZ2qM"
         },
         {
           "name": "Child's Pose",
           "description": "Kneel on floor, sit back on heels, reach arms forward on floor, let forehead rest down. Breathe deeply and relax. Hold 1-2 minutes.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=GR2k9Bt34MQ&t=330"
+          "youtubeUrl": "https://www.youtube.com/watch?v=_ZX_zTOBgp8"
         }
       ]
     },
@@ -4542,22 +4680,53 @@
         "medial patellar retinaculum"
       ],
       "laymanDescription": "Front of knee, below kneecap",
-      "causes": [],
+      "causes": [
+        {
+          "causeId": "repetitive",
+          "causeLabel": "Repetitive jumping or running (basketball, volleyball)",
+          "condition": "Patellar Tendinopathy (Jumper's Knee)",
+          "solution": "Reduce jumping activities, eccentric decline squats, quad stretching, ice after activity, gradual return to sport"
+        },
+        {
+          "causeId": "overuse",
+          "causeLabel": "Increased training load or new activity",
+          "condition": "Patellar Tendon Overload",
+          "solution": "Reduce training volume by 50%, isometric quad exercises, progress to eccentric exercises, ensure adequate recovery between sessions"
+        },
+        {
+          "causeId": "sudden",
+          "causeLabel": "Sudden landing or direct knee impact",
+          "condition": "Acute Patellar Tendon Strain",
+          "solution": "Rest from aggravating activities, ice regularly, gentle quad stretches, if unable to straighten knee seek medical attention"
+        },
+        {
+          "causeId": "gradual",
+          "causeLabel": "Started gradually during sports season",
+          "condition": "Chronic Patellar Tendinopathy",
+          "solution": "Eccentric decline squat program (twice daily), modify training load, strengthen hip and core, may take 3-6 months to resolve"
+        },
+        {
+          "causeId": "unknown",
+          "causeLabel": "Don't know / Other",
+          "condition": "Anterior Knee Pain",
+          "solution": "Quad stretches, wall sits, avoid deep squats temporarily, if kneecap feels unstable or locks consult a physiotherapist"
+        }
+      ],
       "stretches": [
         {
           "name": "Quad Stretch for Knee",
           "description": "Stand, pull heel toward buttock, keep knees together, tuck pelvis slightly. Hold 30 seconds each leg. Reduces pull on patellar tendon.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3PRP9stLoUk&t=40"
+          "youtubeUrl": "https://youtu.be/9EhHFemc8WQ?si=gJh9xT6PihOdC5gg"
         },
         {
           "name": "Eccentric Decline Squat",
           "description": "Stand on slant board or wedge (25\u00b0), slowly lower into squat over 3 seconds, stand up normally. 3 sets of 15, twice daily.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=o89cKpsXzJk&t=150"
+          "youtubeUrl": "https://www.youtube.com/watch?v=aBqRrxxKois"
         },
         {
           "name": "Wall Sit",
           "description": "Back against wall, slide down until thighs parallel to floor, hold position. Start with 30 seconds, progress to 60-90 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=o89cKpsXzJk&t=300"
+          "youtubeUrl": "https://www.youtube.com/watch?v=cWTZ8Am1Ee0"
         }
       ]
     },
@@ -4606,22 +4775,53 @@
         "medial head of gastrocnemius"
       ],
       "laymanDescription": "Upper calf muscle, the bulge",
-      "causes": [],
+      "causes": [
+        {
+          "causeId": "sudden",
+          "causeLabel": "Sudden push-off or sprint (felt a pop)",
+          "condition": "Calf Muscle Strain/Tear",
+          "solution": "RICE protocol (Rest, Ice, Compression, Elevation), avoid walking on toes, gradual stretching after 48-72 hours, if severe bruising or unable to walk seek medical attention"
+        },
+        {
+          "causeId": "repetitive",
+          "causeLabel": "Repetitive running, jumping, or walking",
+          "condition": "Calf Muscle Overuse",
+          "solution": "Reduce mileage/activity, calf stretches before and after exercise, eccentric heel drops, proper footwear, gradual increase in training"
+        },
+        {
+          "causeId": "cramping",
+          "causeLabel": "Muscle cramping during or after exercise",
+          "condition": "Calf Cramps / Spasms",
+          "solution": "Stay hydrated, ensure adequate electrolytes (potassium, magnesium), stretch before bed, calf stretches, avoid sudden increases in activity"
+        },
+        {
+          "causeId": "gradual",
+          "causeLabel": "Gradual tightness, no specific event",
+          "condition": "Chronic Calf Tightness",
+          "solution": "Daily calf stretching routine, foam rolling, heel drop exercises, check footwear for adequate support, consider night splint if morning stiffness"
+        },
+        {
+          "causeId": "unknown",
+          "causeLabel": "Don't know / Other",
+          "condition": "Calf Discomfort",
+          "solution": "Calf stretches with straight knee, foam rolling, if swelling, redness, or warmth in calf consult a doctor to rule out DVT"
+        }
+      ],
       "stretches": [
         {
-          "name": "Wall Calf Stretch (Straight Knee)",
-          "description": "Face wall, place hands on wall, step right foot back, keep right knee straight, press right heel down. Hold 30 seconds each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KS6HJqkfUvI&t=50"
+          "name": "Standing Calf Raise",
+          "description": "Stand on step, raise up on toes, slowly lower heels below step level (3 seconds down). 3 sets of 15 for strengthening.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=Km0QS46bTEA"
         },
         {
           "name": "Step Calf Stretch",
           "description": "Stand on step with heels hanging off, lower heels below step level, hold 30 seconds. Great for deep stretch.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KS6HJqkfUvI&t=220"
+          "youtubeUrl": "https://youtu.be/f_fAPIMyKyc?si=CjKeRi0Ba7-uUyv5&t=10"
         },
         {
-          "name": "Standing Calf Raise",
-          "description": "Stand on step, raise up on toes, slowly lower heels below step level (3 seconds down). 3 sets of 15 for strengthening.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KS6HJqkfUvI&t=315"
+          "name": "Wall Calf Stretch (Straight Knee)",
+          "description": "Face wall, place hands on wall, step right foot back, keep right knee straight, press right heel down. Hold 30 seconds each leg.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=mafo7o7OnFo"
         }
       ]
     },
@@ -4633,22 +4833,53 @@
         "soleus"
       ],
       "laymanDescription": "Deep calf under gastrocnemius",
-      "causes": [],
+      "causes": [
+        {
+          "causeId": "repetitive",
+          "causeLabel": "Long-distance running or prolonged walking",
+          "condition": "Soleus Overuse Syndrome",
+          "solution": "Reduce running volume, bent-knee calf stretches, eccentric heel drops, proper running shoes, gradual mileage increase (10% rule)"
+        },
+        {
+          "causeId": "sudden",
+          "causeLabel": "Sudden acceleration or hill running",
+          "condition": "Soleus Strain",
+          "solution": "Rest from running, ice after activity, gentle bent-knee stretching, compression sleeve, gradual return over 2-4 weeks"
+        },
+        {
+          "causeId": "posture",
+          "causeLabel": "Prolonged standing or walking on hard surfaces",
+          "condition": "Soleus Fatigue / Tightness",
+          "solution": "Seated calf stretches, supportive footwear, take sitting breaks, consider cushioned insoles, calf raises for strengthening"
+        },
+        {
+          "causeId": "gradual",
+          "causeLabel": "Gradual deep calf ache, worse with activity",
+          "condition": "Chronic Soleus Tightness",
+          "solution": "Daily bent-knee calf stretches, foam rolling, eccentric exercises, may indicate Achilles issues if near heel"
+        },
+        {
+          "causeId": "unknown",
+          "causeLabel": "Don't know / Other",
+          "condition": "Deep Calf Discomfort",
+          "solution": "Bent-knee calf stretches, avoid high heels, stay hydrated, if pain is only with walking and relieved by rest consult a doctor"
+        }
+      ],
       "stretches": [
         {
           "name": "Bent Knee Calf Stretch",
           "description": "Same as wall calf stretch but BEND the back knee while keeping heel down. Targets the deeper soleus. Hold 30 seconds each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KS6HJqkfUvI&t=130"
+          "youtubeUrl": "https://www.youtube.com/watch?v=TCDlyg8psFE"
         },
         {
           "name": "Eccentric Heel Drop",
           "description": "Stand on step on balls of feet, rise up on both feet, then lower down slowly (3 seconds) on one foot. 3 sets of 15 each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=Bqaf-IhJz6o&t=105"
+          "youtubeUrl": "https://www.youtube.com/watch?v=3tc0lN_bW5o"
         },
         {
-          "name": "Seated Calf Stretch",
+          "name": "Seated Calf Stretch with strap",
           "description": "Sit with leg extended, loop towel around ball of foot, gently pull toes toward you while keeping knee slightly bent. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=Bqaf-IhJz6o&t=240"
+          "youtubeUrl": "https://www.youtube.com/watch?v=uKePAWa2e6c"
         }
       ]
     },
@@ -4966,22 +5197,53 @@
         "plantar aponeurosis"
       ],
       "laymanDescription": "Connective tissue under foot arch",
-      "causes": [],
+      "causes": [
+        {
+          "causeId": "repetitive",
+          "causeLabel": "Increased running, walking, or standing",
+          "condition": "Plantar Fasciitis",
+          "solution": "Plantar fascia stretches before getting out of bed, calf stretches, frozen water bottle rolling, supportive footwear, reduce activity temporarily"
+        },
+        {
+          "causeId": "footwear",
+          "causeLabel": "Wearing unsupportive shoes or going barefoot",
+          "condition": "Plantar Fascia Strain",
+          "solution": "Wear supportive shoes even at home, arch support insoles, avoid flat shoes and flip-flops, heel cups may help"
+        },
+        {
+          "causeId": "morning",
+          "causeLabel": "Worst pain with first steps in the morning",
+          "condition": "Classic Plantar Fasciitis",
+          "solution": "Stretch plantar fascia BEFORE standing up, night splint to keep foot flexed, calf stretches, rolling massage, may take 6-12 months to fully resolve"
+        },
+        {
+          "causeId": "weight",
+          "causeLabel": "Recent weight gain or prolonged standing job",
+          "condition": "Plantar Fascia Overload",
+          "solution": "Supportive footwear with cushioning, anti-fatigue mats if standing at work, calf and plantar stretches, gradual weight management"
+        },
+        {
+          "causeId": "unknown",
+          "causeLabel": "Don't know / Other",
+          "condition": "Heel/Arch Pain",
+          "solution": "Stretch before walking, supportive shoes, frozen bottle roll, if pain persists over 2-3 months or if heel is numb consult a podiatrist"
+        }
+      ],
       "stretches": [
-        {
-          "name": "Plantar Fascia Stretch",
-          "description": "Sit, cross affected foot over opposite knee, pull toes back toward shin until you feel stretch in arch. Hold 30 seconds. Do before standing in morning.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=qYLjjrPR0sM&t=90"
-        },
-        {
-          "name": "Frozen Bottle Roll",
-          "description": "Freeze water bottle, sit and roll foot over it for 5-10 minutes. Provides massage and ice at the same time.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=qYLjjrPR0sM&t=255"
-        },
         {
           "name": "Calf Stretch for Plantar Fasciitis",
           "description": "Wall calf stretch with straight knee (as above) - tight calves pull on plantar fascia. Hold 30 seconds, 3 times each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=qYLjjrPR0sM&t=165"
+          "youtubeUrl": "https://www.youtube.com/watch?v=YfjeXeiREic"
+        },
+        {
+          "name": "Plantar Fascia Stretch",
+          "description": "Sit, cross affected foot over opposite knee, pull toes back toward shin until you feel stretch in arch. Hold 30 seconds. Do before standing in morning.",
+          "youtubeUrl": "https://youtu.be/A6xAC0RGGaQ?si=kV1LqmxKol5Y-5Ki&t=27"
+        },
+        {
+          "name": "Rolling Ball or Frozen Bottle Roll",
+          "description": "Freeze water bottle, sit and roll foot over it for 5-10 minutes. Provides massage and ice at the same time.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=J1mgaWZ8tWY"
         }
       ]
     },
@@ -6601,4 +6863,3 @@
   </script>
 </body>
 </html>
-
