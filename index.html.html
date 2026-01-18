@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PainSense</title>
   
+  <!-- Nunito Sans Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <script type="importmap">
   {
     "imports": {
@@ -22,26 +27,35 @@
     }
 
     :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f8f9fa;
-      --bg-tertiary: #e9ecef;
-      --text-primary: #1a1a2e;
-      --text-secondary: #6c757d;
-      --accent: #4361ee;
-      --accent-hover: #3a56d4;
-      --accent-light: rgba(67, 97, 238, 0.1);
-      --border: rgba(0,0,0,0.08);
-      --shadow: 0 4px 20px rgba(0,0,0,0.08);
-      --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+      /* Classic Medical Blue Theme */
+      --bg-primary: #0f2744;
+      --bg-secondary: #1a365d;
+      --bg-tertiary: #2c4a6e;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-light: rgba(59, 130, 246, 0.15);
+      --border: rgba(255,255,255,0.1);
+      --shadow: 0 4px 20px rgba(0,0,0,0.3);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.4);
       --radius: 12px;
       --radius-lg: 20px;
       --muscle-base: #d4a59a;
       --muscle-highlight: #60a5fa;
-      --muscle-selected: #ef4444;
+      --muscle-selected: #3b82f6;
+      
+      /* Neutral gray viewer background */
+      --viewer-bg-top: #e8e8e8;
+      --viewer-bg-bottom: #d0d0d0;
+      
+      /* Medical accent for key actions */
+      --action-color: #3b82f6;
+      --action-hover: #2563eb;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
       background: var(--bg-secondary);
       color: var(--text-primary);
       min-height: 100vh;
@@ -56,9 +70,15 @@
     .screen.active {
       display: flex;
     }
+    
+    /* Neutral gray background for text-heavy screens */
+    #screen-cause,
+    #screen-results {
+      background: #1c1c1c;
+    }
 
     .header {
-      background: rgba(255,255,255,0.95);
+      background: var(--bg-primary);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       padding: 14px 20px;
@@ -76,10 +96,7 @@
     .logo {
       font-size: 20px;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), #7209b7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #ffffff;
     }
     .header-subtitle {
       font-size: 13px;
@@ -92,7 +109,7 @@
       background: none;
       border: none;
       font-size: 15px;
-      color: var(--accent);
+      color: #93c5fd;
       cursor: pointer;
       padding: 8px 14px;
       border-radius: 8px;
@@ -114,9 +131,9 @@
       font-weight: 500;
     }
     .start-over-btn:hover {
-      background: #fee2e2;
-      border-color: #fca5a5;
-      color: #dc2626;
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+      color: #f87171;
     }
 
     .viewer-wrapper {
@@ -127,7 +144,7 @@
     .viewer-container {
       flex: 1;
       position: relative;
-      background: linear-gradient(180deg, #e8eef5 0%, #d0dce8 100%);
+      background: linear-gradient(180deg, var(--viewer-bg-top) 0%, var(--viewer-bg-bottom) 100%);
       min-height: 55vh;
     }
     #canvas-container, #canvas-container-focus {
@@ -143,10 +160,10 @@
       top: 16px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--bg-primary);
+      background: #ffffff;
       padding: 14px 44px 14px 20px;
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
       text-align: center;
       max-width: 90%;
       z-index: 10;
@@ -156,10 +173,11 @@
       font-size: 15px;
       font-weight: 600;
       margin-bottom: 4px;
+      color: #1e293b;
     }
     .viewer-overlay p {
       font-size: 13px;
-      color: var(--text-secondary);
+      color: #64748b;
     }
     .viewer-overlay .close-btn {
       position: absolute;
@@ -168,19 +186,19 @@
       width: 24px;
       height: 24px;
       border: none;
-      background: var(--bg-tertiary);
+      background: #f1f5f9;
       border-radius: 50%;
       cursor: pointer;
       font-size: 14px;
-      color: var(--text-secondary);
+      color: #64748b;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
     }
     .viewer-overlay .close-btn:hover {
-      background: #ddd;
-      color: var(--text-primary);
+      background: #e2e8f0;
+      color: #1e293b;
     }
 
     .muscle-indicator {
@@ -199,7 +217,7 @@
       z-index: 10;
       max-width: 240px;
       width: 240px;
-      border-left: 4px solid var(--accent);
+      border-left: 4px solid var(--action-color);
     }
     .muscle-indicator::before {
       content: '';
@@ -208,7 +226,7 @@
       top: 50%;
       transform: translateY(-50%);
       border: 8px solid transparent;
-      border-right-color: var(--accent);
+      border-right-color: var(--action-color);
     }
     .muscle-indicator.visible { display: flex; }
     .muscle-indicator .close-indicator-btn {
@@ -230,13 +248,13 @@
       transition: all 0.2s;
     }
     .muscle-indicator .close-indicator-btn:hover {
-      background: #fee2e2;
-      color: #dc2626;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
     }
     .muscle-indicator .muscle-name {
       font-weight: 600;
       font-size: 16px;
-      color: var(--accent);
+      color: #93c5fd;
     }
     .muscle-indicator .muscle-description {
       font-size: 13px;
@@ -244,7 +262,7 @@
       line-height: 1.5;
     }
     .muscle-indicator .confirm-btn {
-      background: var(--accent);
+      background: var(--action-color);
       color: white;
       border: none;
       padding: 10px 20px;
@@ -254,7 +272,12 @@
       transition: background 0.2s;
     }
     .muscle-indicator .confirm-btn:hover {
-      background: var(--accent-hover);
+      background: var(--action-hover);
+    }
+    
+    /* Overlay for mobile bottom sheet - hidden on desktop */
+    .muscle-indicator-overlay {
+      display: none;
     }
 
     /* Pointer line SVG */
@@ -291,15 +314,15 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
-      color: var(--text-secondary);
+      color: #64748b;
       transition: all 0.2s;
     }
     .nav-arrow:hover {
@@ -326,15 +349,15 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
-      color: var(--text-secondary);
+      color: #64748b;
       transition: all 0.2s;
     }
     .nav-arrow-vertical:hover {
@@ -350,9 +373,9 @@
       cursor: not-allowed;
     }
     .nav-arrow-vertical:disabled:hover {
-      background: var(--bg-primary);
-      border-color: var(--border);
-      color: var(--text-secondary);
+      background: #ffffff;
+      border-color: #e2e8f0;
+      color: #64748b;
     }
 
     .region-bar {
@@ -360,6 +383,7 @@
       border-top: 1px solid var(--border);
       padding: 16px;
       overflow-x: auto;
+      font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
     }
     .region-buttons {
       display: flex;
@@ -376,11 +400,14 @@
       cursor: pointer;
       transition: all 0.2s;
       white-space: nowrap;
-      font-weight: 500;
+      font-weight: 600;
+      color: #f1f5f9;
+      font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     .region-btn:hover {
       border-color: var(--accent);
       background: var(--accent-light);
+      color: #ffffff;
     }
     .region-btn.active {
       background: var(--accent);
@@ -393,13 +420,15 @@
       padding: 16px;
       max-height: 200px;
       overflow-y: auto;
+      font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
     }
     .muscle-list-panel h4 {
       font-size: 13px;
-      color: var(--text-secondary);
+      color: #cbd5e1;
       margin-bottom: 12px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      font-weight: 600;
     }
     .muscle-list {
       display: flex;
@@ -414,10 +443,14 @@
       font-size: 13px;
       cursor: pointer;
       transition: all 0.2s;
+      color: #f1f5f9;
+      font-weight: 500;
+      font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     .muscle-list-item:hover {
       border-color: var(--accent);
       background: var(--accent-light);
+      color: #ffffff;
     }
     .muscle-list-item.active {
       border-color: var(--accent);
@@ -431,7 +464,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: var(--bg-secondary);
+      background: var(--viewer-bg-top);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -442,11 +475,14 @@
     .spinner {
       width: 44px;
       height: 44px;
-      border: 3px solid var(--bg-tertiary);
+      border: 3px solid #e2e8f0;
       border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin-bottom: 16px;
+    }
+    .loading-text {
+      color: #64748b;
     }
     @keyframes spin {
       to { transform: rotate(360deg); }
@@ -454,7 +490,8 @@
 
     /* Pain Intensity Screen */
     .content-card {
-      background: var(--bg-primary);
+      background: #1c1c1c;
+      border: 2px solid #3b82f6;
       border-radius: var(--radius-lg);
       padding: 24px;
       margin: 20px;
@@ -465,7 +502,7 @@
       margin-bottom: 8px;
     }
     .content-card .subtitle {
-      color: var(--text-secondary);
+      color: #a0a0a0;
       font-size: 14px;
       margin-bottom: 24px;
     }
@@ -474,13 +511,14 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: var(--accent-light);
-      color: var(--accent);
+      background: #333333;
+      color: #e2e8f0;
       padding: 8px 14px;
       border-radius: 20px;
       font-size: 14px;
       font-weight: 500;
       margin-bottom: 20px;
+      border: 1px solid #404040;
     }
 
     .pain-slider-container {
@@ -545,20 +583,20 @@
     }
     .cause-option {
       padding: 16px;
-      background: var(--bg-secondary);
-      border: 2px solid transparent;
+      background: #2a2a2a;
+      border: 2px solid #404040;
       border-radius: var(--radius);
       cursor: pointer;
       transition: all 0.2s;
       text-align: left;
     }
     .cause-option:hover {
-      border-color: var(--accent);
-      background: var(--accent-light);
+      border-color: #3b82f6;
+      background: #333333;
     }
     .cause-option.selected {
-      border-color: var(--accent);
-      background: var(--accent-light);
+      border-color: #3b82f6;
+      background: #333333;
     }
     .cause-option .cause-title {
       font-weight: 500;
@@ -567,7 +605,7 @@
     }
     .cause-option .cause-desc {
       font-size: 13px;
-      color: var(--text-secondary);
+      color: #a0a0a0;
     }
 
     /* Results Screen */
@@ -578,7 +616,8 @@
       padding-bottom: 100px;
     }
     .assessment-card {
-      background: var(--bg-primary);
+      background: #2a2a2a;
+      border: 2px solid #3b82f6;
       border-radius: var(--radius-lg);
       padding: 24px;
       margin-bottom: 16px;
@@ -597,7 +636,7 @@
 
     .condition-badge {
       display: inline-block;
-      background: linear-gradient(135deg, var(--accent), #7209b7);
+      background: #3b82f6;
       color: white;
       padding: 8px 16px;
       border-radius: 20px;
@@ -611,7 +650,7 @@
       align-items: flex-start;
       gap: 12px;
       padding: 12px 0;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid #404040;
     }
     .assessment-detail:last-child {
       border-bottom: none;
@@ -628,7 +667,7 @@
     }
     .assessment-detail .detail-content p {
       font-size: 14px;
-      color: var(--text-secondary);
+      color: #a0a0a0;
       line-height: 1.5;
     }
 
@@ -643,13 +682,13 @@
       align-items: flex-start;
       gap: 12px;
       padding: 12px;
-      background: var(--bg-secondary);
+      background: #333333;
       border-radius: var(--radius);
     }
     .solution-item .solution-number {
       width: 24px;
       height: 24px;
-      background: var(--accent);
+      background: #3b82f6;
       color: white;
       border-radius: 50%;
       display: flex;
@@ -666,7 +705,8 @@
 
     /* Stretch Cards */
     .stretch-card {
-      background: var(--bg-secondary);
+      background: #2a2a2a;
+      border: 2px solid #3b82f6;
       border-radius: var(--radius);
       padding: 16px;
       margin-bottom: 16px;
@@ -675,11 +715,11 @@
       font-size: 15px;
       font-weight: 600;
       margin-bottom: 8px;
-      color: var(--accent);
+      color: #ffffff;
     }
     .stretch-card p {
       font-size: 14px;
-      color: var(--text-secondary);
+      color: #a0a0a0;
       line-height: 1.5;
       margin-bottom: 12px;
     }
@@ -750,11 +790,16 @@
       border: none;
     }
     .btn-primary {
-      background: var(--accent);
+      background: var(--action-color);
       color: white;
     }
     .btn-primary:hover {
-      background: var(--accent-hover);
+      background: var(--action-hover);
+    }
+    .btn-primary:disabled {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: not-allowed;
     }
     .btn-secondary {
       background: var(--bg-secondary);
@@ -776,7 +821,7 @@
       background: var(--bg-primary);
       padding: 16px 20px;
       border-top: 1px solid var(--border);
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
       z-index: 50;
     }
     .bottom-action .btn {
@@ -792,11 +837,119 @@
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: #ccc;
+      background: #475569;
       border-radius: 3px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #aaa;
+      background: #64748b;
+    }
+
+    /* Disclaimer Screen */
+    .disclaimer-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-primary);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .disclaimer-screen.hidden {
+      display: none;
+    }
+    .disclaimer-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+    .disclaimer-card .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+    .disclaimer-card .tagline {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+    .disclaimer-card h2 {
+      font-size: 18px;
+      color: #f1f5f9;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    .disclaimer-content {
+      background: var(--bg-primary);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: left;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .disclaimer-content p {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .disclaimer-content p:last-child {
+      margin-bottom: 0;
+    }
+    .disclaimer-content strong {
+      color: #f1f5f9;
+    }
+    .disclaimer-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+    .disclaimer-checkbox input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .disclaimer-checkbox label {
+      font-size: 14px;
+      color: #e2e8f0;
+      cursor: pointer;
+      line-height: 1.5;
+    }
+    .disclaimer-btn {
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--action-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .disclaimer-btn:hover:not(:disabled) {
+      background: var(--action-hover);
+    }
+    .disclaimer-btn:disabled {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: not-allowed;
     }
 
     /* Responsive */
@@ -812,10 +965,143 @@
       .results-container {
         padding: 12px;
       }
+      
+      /* Mobile Bottom Sheet for Muscle Indicator */
+      .muscle-indicator {
+        position: fixed;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        top: auto;
+        transform: translateY(100%);
+        max-width: 100%;
+        width: 100%;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        border-left: none;
+        border-top: 4px solid var(--action-color);
+        padding: 20px;
+        padding-top: 16px;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.12), 0 -12px 40px rgba(0,0,0,0.08);
+        z-index: 100;
+        transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .muscle-indicator::before {
+        display: none;
+      }
+      .muscle-indicator.visible {
+        transform: translateY(0);
+      }
+      
+      /* Bottom sheet handle indicator */
+      .muscle-indicator::after {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 36px;
+        height: 4px;
+        background: var(--bg-tertiary);
+        border-radius: 2px;
+      }
+      
+      /* Horizontal layout for mobile bottom sheet */
+      .muscle-indicator .muscle-name {
+        font-size: 18px;
+        margin-top: 8px;
+      }
+      .muscle-indicator .muscle-description {
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .muscle-indicator .confirm-btn {
+        width: 100%;
+        padding: 14px 24px;
+        font-size: 16px;
+        margin-top: 8px;
+      }
+      .muscle-indicator .close-indicator-btn {
+        top: 12px;
+        right: 12px;
+        width: 28px;
+        height: 28px;
+        font-size: 18px;
+      }
+      
+      /* Hide pointer line on mobile - doesn't work well with bottom sheet */
+      .pointer-line {
+        display: none !important;
+      }
+      
+      /* Adjust viewer when bottom sheet is visible */
+      #screen-muscle .viewer-container {
+        transition: height 0.3s ease;
+      }
+      
+      /* Move nav arrows up a bit on mobile to avoid bottom sheet overlap */
+      #screen-muscle .nav-arrows {
+        bottom: 16px;
+      }
+      
+      /* Overlay behind bottom sheet on mobile - transparent, just for tap-to-close */
+      .muscle-indicator-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: transparent;
+        z-index: 99;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+      }
+      .muscle-indicator-overlay.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+    
+    /* Tablet adjustments */
+    @media (min-width: 601px) and (max-width: 900px) {
+      .muscle-indicator {
+        right: 20px;
+        max-width: 220px;
+        width: 220px;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- DISCLAIMER SCREEN -->
+  <div id="disclaimer-screen" class="disclaimer-screen">
+    <div class="disclaimer-card">
+      <div class="logo">PainSense</div>
+      <div class="tagline">Body Pain Reference Guide</div>
+      
+      <h2>Important Notice</h2>
+      
+      <div class="disclaimer-content">
+        <p><strong>This application is for informational and educational purposes only.</strong></p>
+        
+        <p>PainSense is not a medical device and does not provide medical advice, diagnosis, or treatment. The information provided should not be used as a substitute for professional medical consultation, diagnosis, or treatment.</p>
+        
+        <p><strong>Always seek the advice of a qualified healthcare provider</strong> with any questions regarding a medical condition. Never disregard professional medical advice or delay seeking it because of information obtained from this application.</p>
+        
+        <p>If you are experiencing severe pain, sudden onset of symptoms, or any medical emergency, <strong>contact emergency services or visit your nearest emergency room immediately.</strong></p>
+        
+        <p>By using this application, you acknowledge that you understand these limitations and agree to use the information provided solely as a general reference.</p>
+      </div>
+      
+      <div class="disclaimer-checkbox">
+        <input type="checkbox" id="disclaimer-agree" onchange="updateDisclaimerButton()">
+        <label for="disclaimer-agree">I understand and agree that this is not medical advice and is for reference purposes only</label>
+      </div>
+      
+      <button class="disclaimer-btn" id="disclaimer-btn" disabled onclick="acceptDisclaimer()">
+        Continue to PainSense
+      </button>
+    </div>
+  </div>
 
   <!-- SCREEN 1: Region Selection -->
   <div id="screen-region" class="screen active">
@@ -889,6 +1175,7 @@
           <div class="muscle-description" id="indicator-muscle-desc">Description</div>
           <button class="confirm-btn" onclick="confirmMuscleSelection()">Select This Muscle</button>
         </div>
+        <div class="muscle-indicator-overlay" id="muscle-indicator-overlay" onclick="closeMuscleIndicator()"></div>
         <div class="nav-arrows" id="nav-arrows-2">
           <button class="nav-arrow" onclick="rotateModel2(-1)" title="Rotate Left">←</button>
           <button class="nav-arrow" onclick="rotateModel2(1)" title="Rotate Right">→</button>
@@ -908,55 +1195,11 @@
     </div>
   </div>
 
-  <!-- SCREEN 3: Pain Intensity -->
-  <div id="screen-intensity" class="screen">
-    <header class="header">
-      <div class="header-content">
-        <button class="back-btn" onclick="goToScreen('screen-muscle')">← Back</button>
-        <div>
-          <div class="logo">PainSense</div>
-          <div class="header-subtitle">Pain Level</div>
-        </div>
-        <button class="start-over-btn" onclick="startOver()">Start Over</button>
-      </div>
-    </header>
-    
-    <div style="flex: 1; overflow-y: auto; padding-bottom: 100px;">
-      <div class="content-card">
-        <div class="selected-muscle-badge">
-          <span>📍</span>
-          <span id="intensity-muscle-name">Selected Muscle</span>
-        </div>
-        
-        <h2>How intense is your pain?</h2>
-        <p class="subtitle">Move the slider to indicate your pain level</p>
-        
-        <div class="pain-slider-container">
-          <input type="range" min="1" max="10" value="5" class="pain-slider" id="pain-slider">
-          <div class="pain-labels">
-            <span>Minimal</span>
-            <span>Moderate</span>
-            <span>Severe</span>
-          </div>
-        </div>
-        
-        <div class="pain-value">
-          <div class="number" id="pain-number">5</div>
-          <div class="label" id="pain-label">Moderate</div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="bottom-action">
-      <button class="btn btn-primary btn-block" onclick="goToScreen('screen-cause')">Continue</button>
-    </div>
-  </div>
-
-  <!-- SCREEN 4: Cause Selection -->
+  <!-- SCREEN 3: Cause Selection -->
   <div id="screen-cause" class="screen">
     <header class="header">
       <div class="header-content">
-        <button class="back-btn" onclick="goToScreen('screen-intensity')">← Back</button>
+        <button class="back-btn" onclick="goToScreen('screen-muscle')">← Back</button>
         <div>
           <div class="logo">PainSense</div>
           <div class="header-subtitle">Possible Cause</div>
@@ -979,14 +1222,16 @@
           <!-- Populated by JS -->
         </div>
         
-        <div class="custom-cause-section" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+        <div class="custom-cause-section" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #404040;">
           <label for="custom-cause-text" style="display: block; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
             Or describe your situation:
           </label>
           <textarea 
             id="custom-cause-text" 
             placeholder="Describe when and how the pain started, what you were doing, or any other details that might be relevant..."
-            style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--border-color); border-radius: 12px; font-size: 14px; font-family: inherit; resize: vertical; background: var(--card-bg); color: var(--text-primary);"
+            style="width: 100%; min-height: 100px; padding: 12px; border: 2px solid #404040; border-radius: 12px; font-size: 14px; font-family: inherit; resize: vertical; background: #2a2a2a; color: var(--text-primary); transition: border-color 0.2s;"
+            onfocus="this.style.borderColor='#3b82f6'"
+            onblur="this.style.borderColor='#404040'"
             oninput="handleCustomCauseInput(this)"
           ></textarea>
         </div>
@@ -1594,14 +1839,14 @@
           "youtubeUrl": "https://youtu.be/EM18snVgV_c?si=gSJk_alVYhke2QY4&t=64"
         },
         {
-          "name": "Resisted Jaw Opening",
-          "description": "Place thumb under chin, open mouth slowly against light resistance, hold 5 seconds. Repeat 10 times. Strengthens and relaxes jaw muscles.",
-          "youtubeUrl": "https://youtu.be/cAr0I4gFeT8?si=avnqnhGbru4krNnT&t=13"
-        },
-        {
           "name": "Jaw Side-to-Side Stretch",
           "description": "Open mouth slightly, slowly move jaw to the left, hold 5 seconds, then to the right. Repeat 5 times each side. Move gently, never force.",
           "youtubeUrl": "https://youtu.be/DFg77J06roE?si=IXPogVYckF5EBd7P"
+        },
+        {
+          "name": "Resisted Jaw Opening",
+          "description": "Place thumb under chin, open mouth slowly against light resistance, hold 5 seconds. Repeat 10 times. Strengthens and relaxes jaw muscles.",
+          "youtubeUrl": "https://youtu.be/cAr0I4gFeT8?si=avnqnhGbru4krNnT&t=13"
         }
       ]
     },
@@ -1635,14 +1880,14 @@
       ],
       "stretches": [
         {
+          "name": "Base skull release",
+          "description": "Place tongue on roof of mouth, let teeth separate naturally, relax jaw completely. Hold for 30 seconds. This releases temple tension.",
+          "youtubeUrl": "https://youtu.be/G47ei7_PgTg?si=PO1f0MFnF00jnQal&t=58"
+        },
+        {
           "name": "Temple Massage",
           "description": "Use fingertips to massage temples in slow circular motions for 1-2 minutes. Apply moderate pressure. Do this several times daily.",
           "youtubeUrl": "https://youtu.be/0qZScBozMhk?si=ZYzmVaAc4dp2ttoY&t=52"
-        },
-        {
-          "name": "Base skull release",
-          "description": "Place tongue on roof of mouth, let teeth separate naturally, relax jaw completely. Hold for 30 seconds. This releases temple tension.",
-          "youtubeUrl": "https://www.youtube.com/shorts/fK08jK_fj2c"
         },
         {
           "name": "Upper back and shoulder release",
@@ -1682,19 +1927,19 @@
       ],
       "stretches": [
         {
-          "name": "Eyebrow Raise and Release",
+          "name": "Brow Pinchin",
           "description": "Raise your eyebrows as high as possible, hold for 5 seconds, then relax completely. Repeat 10 times. This helps release tension in the frontalis muscle.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=FxQCk4-PIEY&t=45"
+          "youtubeUrl": "https://youtu.be/maYkOqPMCUg?si=xR03IPKYXqHGy4N0&t=31"
         },
         {
           "name": "Forehead Massage",
           "description": "Using your fingertips, massage your forehead in small circular motions from the center outward. Spend 1-2 minutes. Apply moderate pressure.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=FxQCk4-PIEY&t=120"
+          "youtubeUrl": "https://youtu.be/2J8Ue5i5wDI?si=LF90Ry9k9u-t-i6L&t=14"
         },
         {
           "name": "Scalp and Forehead Release",
           "description": "Place fingertips at hairline, gently pull skin upward while looking down. Hold 10 seconds. Helps release tension across entire forehead.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=FxQCk4-PIEY&t=180"
+          "youtubeUrl": "https://youtu.be/m4Ti6cC1d98?si=Taa9VRzAmNCkMRwI&t=10"
         }
       ]
     },
@@ -1734,14 +1979,14 @@
       ],
       "stretches": [
         {
-          "name": "Ear to Shoulder Stretch",
-          "description": "Sit or stand tall, gently tilt right ear toward right shoulder until you feel a stretch on the left side. Hold 30 seconds. Repeat other side. Don't force.",
-          "youtubeUrl": "https://youtu.be/t-1Z2ZYpmt0?si=RuBmX84_VgsToFWo&t=74"
-        },
-        {
           "name": "Chin Tuck",
           "description": "Sit tall, pull chin straight back making a 'double chin', hold 5 seconds, release. Repeat 10 times. Great for posture and neck strength.",
           "youtubeUrl": "https://www.youtube.com/watch?v=7rnlAVhAK-8"
+        },
+        {
+          "name": "Ear to Shoulder Stretch",
+          "description": "Sit or stand tall, gently tilt right ear toward right shoulder until you feel a stretch on the left side. Hold 30 seconds. Repeat other side. Don't force.",
+          "youtubeUrl": "https://youtu.be/t-1Z2ZYpmt0?si=RuBmX84_VgsToFWo&t=74"
         },
         {
           "name": "Rotation Stretch",
@@ -1786,19 +2031,19 @@
       ],
       "stretches": [
         {
-          "name": "Upper Trap Stretch",
-          "description": "Sit tall, hold chair with right hand, tilt left ear to left shoulder while looking straight ahead. Hold 30 seconds. Repeat other side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=8sYcL0cH-xI&t=45"
+          "name": "Shoulder Blade Squeeze",
+          "description": "Sit tall, squeeze shoulder blades together as if holding a pencil between them, hold 5 seconds, release. Repeat 10-15 times.",
+          "youtubeUrl": "https://youtu.be/ouRhQE2iOI8?si=wjHn6ZsZ7q1Pfqph&t=6"
         },
         {
           "name": "Shoulder Rolls",
           "description": "Roll shoulders backward in slow circles 10 times, then forward 10 times. Do this every hour when working at desk.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=8sYcL0cH-xI&t=150"
+          "youtubeUrl": "https://www.youtube.com/watch?v=X7NtgY9kCCM"
         },
         {
-          "name": "Shoulder Blade Squeeze",
-          "description": "Sit tall, squeeze shoulder blades together as if holding a pencil between them, hold 5 seconds, release. Repeat 10-15 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=8sYcL0cH-xI&t=255"
+          "name": "Upper Trap Stretch",
+          "description": "Sit tall, hold chair with right hand, tilt left ear to left shoulder while looking straight ahead. Hold 30 seconds. Repeat other side.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=z4jptepVuq4"
         }
       ]
     },
@@ -1840,17 +2085,17 @@
         {
           "name": "Levator Scapulae Stretch",
           "description": "Sit tall, turn head 45\u00b0 to the right, look down toward your right armpit, use right hand to gently pull head down. Hold 30 seconds. Repeat left.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=CeXLTmPotYI&t=60"
+          "youtubeUrl": "https://youtu.be/GSoXPJRnR6E?si=3gx-afm2en9NgBfn&t=5"
         },
         {
           "name": "Neck Rotation with Flexion",
           "description": "Turn head to one side, then drop chin toward chest while turned. Feel stretch at back of neck. Hold 20 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=CeXLTmPotYI&t=165"
+          "youtubeUrl": "https://www.youtube.com/watch?v=M9YJGoL5aR8"
         },
         {
           "name": "Thread the Needle",
           "description": "On all fours, reach right arm under body to the left, let right shoulder drop to floor, hold 30 seconds. Repeat other side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=CeXLTmPotYI&t=270"
+          "youtubeUrl": "https://www.youtube.com/watch?v=rlac1t_QQJM"
         }
       ]
     },
@@ -1880,14 +2125,14 @@
       ],
       "stretches": [
         {
-          "name": "Scalene Stretch",
-          "description": "Sit tall, tilt head to right, then rotate slightly to look up toward ceiling. Place right hand on left collarbone. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wQylqaCl8Zo&t=75"
-        },
-        {
           "name": "Ear to Shoulder Stretch",
           "description": "Sit tall, gently tilt right ear toward right shoulder. For deeper stretch, place right hand on left side of head. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wQylqaCl8Zo&t=75"
+          "youtubeUrl": "https://youtu.be/t-1Z2ZYpmt0?si=RuBmX84_VgsToFWo&t=74"
+        },
+        {
+          "name": "Scalene Stretch",
+          "description": "Sit tall, tilt head to right, then rotate slightly to look up toward ceiling. Place right hand on left collarbone. Hold 30 seconds each side.",
+          "youtubeUrl": "https://youtu.be/K4RT5VWhptg?si=c5zXon5I3eI-0Tv2&t=5"
         }
       ]
     },
@@ -1943,14 +2188,14 @@
       ],
       "stretches": [
         {
-          "name": "Suboccipital Release",
-          "description": "Lie on back with two tennis balls in a sock under base of skull. Let head rest on balls, breathe deeply for 2-3 minutes.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=Lz-LPUDxHhg&t=130"
-        },
-        {
           "name": "Chin Tuck with Nod",
           "description": "Do chin tuck, then gently nod head as if saying 'yes'. This targets the deep suboccipital muscles. 10 slow repetitions.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=Lz-LPUDxHhg&t=240"
+          "youtubeUrl": "https://youtu.be/_AknIUAwvP0?si=DwJpJGrVTX5FDRlu&t=38"
+        },
+        {
+          "name": "Suboccipital Release",
+          "description": "Lie on back with two tennis balls in a sock under base of skull. Let head rest on balls, breathe deeply for 2-3 minutes.",
+          "youtubeUrl": "https://youtu.be/G47ei7_PgTg?si=t-X8xH3iMLAP_nid&t=72"
         }
       ]
     },
@@ -1987,17 +2232,17 @@
         {
           "name": "Chin Tuck Exercise",
           "description": "Sit or stand tall, gently draw your chin back as if making a double chin. Hold for 5-10 seconds, relax. Repeat 10-15 times. Strengthens deep neck flexors.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wQylqaCl8Zo&t=65"
-        },
-        {
-          "name": "Supine Chin Tuck",
-          "description": "Lie on your back without a pillow. Gently press the back of your head into the floor while tucking chin. Hold 5 seconds. Repeat 10 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wQylqaCl8Zo&t=145"
+          "youtubeUrl": "https://www.youtube.com/watch?v=7rnlAVhAK-8"
         },
         {
           "name": "Deep Neck Flexor Activation",
           "description": "Lie on back, tuck chin slightly, lift head just 1 inch off floor. Hold 5-10 seconds. This activates deep stabilizers without straining.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=2xSlX7n-IHw&t=90"
+          "youtubeUrl": "https://www.youtube.com/watch?v=lRKWP2LzCmw"
+        },
+        {
+          "name": "Supine Chin Tuck",
+          "description": "Lie on your back without a pillow. Gently press the back of your head into the floor while tucking chin. Hold 5 seconds. Repeat 10 times.",
+          "youtubeUrl": "https://youtu.be/oinuIh47Www?si=nzq-0nTG9kteO4x9&t=7"
         }
       ]
     },
@@ -2031,19 +2276,19 @@
       ],
       "stretches": [
         {
-          "name": "Platysma Stretch",
-          "description": "Tilt head back slightly, jut lower jaw forward and upward. You should feel a stretch in the front of your neck. Hold 15-20 seconds. Repeat 3 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=H9sLU7L5oQw&t=35"
+          "name": "Jaw and Neck Release",
+          "description": "Open mouth wide, then close slowly while gently pressing chin down with fingers. Helps release tension in platysma and jaw muscles.",
+          "youtubeUrl": "https://youtu.be/VFC2vIUbg6U?si=8b4dMyBmVUJRH4lZ&t=219"
         },
         {
           "name": "Neck Extension Stretch",
           "description": "Sit tall, slowly tilt head back looking at ceiling. Keep shoulders down. Hold 15 seconds. Gently return to neutral. Repeat 3 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=H9sLU7L5oQw&t=90"
+          "youtubeUrl": "https://www.youtube.com/watch?v=ML9tj2g83Q8"
         },
         {
-          "name": "Jaw and Neck Release",
-          "description": "Open mouth wide, then close slowly while gently pressing chin down with fingers. Helps release tension in platysma and jaw muscles.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=H9sLU7L5oQw&t=145"
+          "name": "Platysma Stretch",
+          "description": "Tilt head back slightly, jut lower jaw forward and upward. You should feel a stretch in the front of your neck. Hold 15-20 seconds. Repeat 3 times.",
+          "youtubeUrl": "https://youtu.be/L-Kw4lftgaY?si=H-srlhz0yINjkZZK&t=22"
         }
       ]
     },
@@ -2082,19 +2327,19 @@
       ],
       "stretches": [
         {
-          "name": "Chin to Chest Stretch",
-          "description": "Sit tall, gently drop chin toward chest. Place hands behind head for gentle added pressure. Hold 20-30 seconds. Stretches back of neck.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wQylqaCl8Zo&t=210"
-        },
-        {
           "name": "Cat-Cow for Neck",
           "description": "On hands and knees, slowly round spine tucking chin (cat), then arch back looking up (cow). Focus on neck movement. Repeat 10 times slowly.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=kqnua4rHVVA&t=60"
+          "youtubeUrl": "https://youtu.be/sQd3GnSfE9A?si=Ss76wCm32Y2k4QIn&t=56"
+        },
+        {
+          "name": "Chin to Chest Stretch",
+          "description": "Sit tall, gently drop chin toward chest. Place hands behind head for gentle added pressure. Hold 20-30 seconds. Stretches back of neck.",
+          "youtubeUrl": "https://youtu.be/GjS3i2-BlxA?si=RLvgXUHOoKgipXrp&t=5"
         },
         {
           "name": "Neck Rotation Stretch",
           "description": "Sit tall, slowly turn head to look over one shoulder. Hold 15 seconds. Return to center, repeat other side. Helps loosen neck extensors.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wQylqaCl8Zo&t=290"
+          "youtubeUrl": "https://www.youtube.com/watch?v=ZgeO87_VFog"
         }
       ]
     },
@@ -2131,19 +2376,19 @@
       ],
       "stretches": [
         {
+          "name": "Arm Across Chest Variation",
+          "description": "Arm across chest at different heights (low, middle, high) to target all parts of deltoid. Hold each position 20 seconds.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=-1K0m5ywRcY"
+        },
+        {
           "name": "Cross-Body Shoulder Stretch",
           "description": "Bring right arm across chest, use left hand to pull it closer until you feel a stretch in the shoulder. Hold 30 seconds. Repeat other side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=Jy0Mxa_aqQE&t=30"
+          "youtubeUrl": "https://www.youtube.com/watch?v=CPnpQVDzVgM"
         },
         {
           "name": "Pendulum Exercise",
           "description": "Lean forward on a table with good arm, let affected arm hang, swing gently in small circles. 30 seconds each direction. Great for mobility.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=Jy0Mxa_aqQE&t=165"
-        },
-        {
-          "name": "Arm Across Chest Variation",
-          "description": "Arm across chest at different heights (low, middle, high) to target all parts of deltoid. Hold each position 20 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=Jy0Mxa_aqQE&t=270"
+          "youtubeUrl": "https://www.youtube.com/watch?v=YYvl59eU78M"
         }
       ]
     },
@@ -2180,19 +2425,19 @@
       ],
       "stretches": [
         {
-          "name": "Doorway Stretch",
+          "name": "Assisted flexion",
           "description": "Stand in doorway, place forearm on frame at 90\u00b0, step forward with one foot until you feel a chest/shoulder stretch. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=SH7zAAb5e94&t=90"
-        },
-        {
-          "name": "Sleeper Stretch",
-          "description": "Lie on affected side, elbow bent 90\u00b0, use other hand to gently push forearm toward floor. Stop if painful. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=SH7zAAb5e94&t=255"
+          "youtubeUrl": "https://youtu.be/70UxCj6AoPo?si=plUqiAeNf2PYzvyI&t=132"
         },
         {
           "name": "External Rotation Stretch",
           "description": "Hold a stick behind your back, affected hand at bottom, use top hand to pull stick up, rotating the shoulder. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=SH7zAAb5e94&t=360"
+          "youtubeUrl": "https://youtu.be/TbqBSx14QsQ?si=teBvSXIuw2Xx5fP8&t=10"
+        },
+        {
+          "name": "Wall Slide",
+          "description": "Lie on affected side, elbow bent 90\u00b0, use other hand to gently push forearm toward floor. Stop if painful. Hold 30 seconds.",
+          "youtubeUrl": "https://youtu.be/70UxCj6AoPo?si=y2C8Tj0I1FVoHwol&t=226"
         }
       ]
     },
@@ -2226,19 +2471,19 @@
       ],
       "stretches": [
         {
+          "name": "Child's Pose with Side Reach",
+          "description": "In child's pose, walk hands to one side to feel a stretch along the side of your back and shoulder. Hold 30 seconds each side.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=YTAwpiX2Dsg"
+        },
+        {
           "name": "Cross-Body Arm Stretch",
           "description": "Bring one arm across your chest. Use opposite hand to gently pull the arm closer. Hold 20-30 seconds. Repeat 3 times each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=MO7zSBI4GJY&t=85"
+          "youtubeUrl": "https://www.youtube.com/watch?v=-1K0m5ywRcY"
         },
         {
           "name": "Doorway Lat Stretch",
           "description": "Hold onto a doorframe at shoulder height. Step through and lean forward, letting your arm stretch behind. Hold 20-30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=MO7zSBI4GJY&t=150"
-        },
-        {
-          "name": "Child's Pose with Side Reach",
-          "description": "In child's pose, walk hands to one side to feel a stretch along the side of your back and shoulder. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=MO7zSBI4GJY&t=220"
+          "youtubeUrl": "https://youtu.be/SAZDip5crww?si=gaAZXg8v4FHBn44Z&t=14"
         }
       ]
     },
@@ -2272,19 +2517,19 @@
       ],
       "stretches": [
         {
-          "name": "Doorway Pec Stretch",
-          "description": "Stand in doorway with arm at 90 degrees against frame. Step forward to stretch front of shoulder and chest. Hold 20-30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=SQ-L5JAyWmo&t=48"
-        },
-        {
           "name": "Behind Back Arm Stretch",
           "description": "Reach both arms behind your back, clasp hands. Gently lift arms while keeping chest up. Hold 20 seconds. Stretches front of shoulders.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=SQ-L5JAyWmo&t=120"
+          "youtubeUrl": "https://youtu.be/S4JoZx7MNOs?si=JGOeBGvrR-9IOqr4&t=3"
+        },
+        {
+          "name": "Doorway Pec Stretch",
+          "description": "Stand in doorway with arm at 90 degrees against frame. Step forward to stretch front of shoulder and chest. Hold 20-30 seconds each side.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=B9uY01NoqBg"
         },
         {
           "name": "Wall Angel Exercise",
           "description": "Stand with back against wall, arms in 'W' position. Slowly slide arms up and down wall. Helps mobilize front shoulder while strengthening back.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=SQ-L5JAyWmo&t=185"
+          "youtubeUrl": "https://youtu.be/1UU4VvklQ44?si=KzjRE7l6_lEPLIdp"
         }
       ]
     },
@@ -2322,17 +2567,17 @@
         {
           "name": "Bicep Wall Stretch",
           "description": "Place palm on wall behind you at shoulder height, arm straight, slowly turn body away from wall until you feel a stretch in bicep. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=ZnZjLpKRBYc&t=70"
-        },
-        {
-          "name": "Seated Bicep Stretch",
-          "description": "Sit on floor, hands behind you with fingers pointing back, slowly slide buttocks forward until you feel bicep stretch. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=ZnZjLpKRBYc&t=180"
+          "youtubeUrl": "https://www.youtube.com/watch?v=QY4gCIYbGQk"
         },
         {
           "name": "Doorway Bicep Stretch",
           "description": "Hold doorframe with arm straight and thumb pointing down, turn body away from arm. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=ZnZjLpKRBYc&t=285"
+          "youtubeUrl": "https://www.youtube.com/watch?v=a_cRC9PMwKs"
+        },
+        {
+          "name": "Seated Bicep Stretch",
+          "description": "Sit on floor, hands behind you with fingers pointing back, slowly slide buttocks forward until you feel bicep stretch. Hold 30 seconds.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=IYlXSQLDHmo"
         }
       ]
     },
@@ -2369,19 +2614,19 @@
       ],
       "stretches": [
         {
+          "name": "Assisted Tricep Stretch",
+          "description": "Bring right arm across chest, bend elbow, use left hand to gently push arm toward body. Hold 30 seconds each side.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=EQaqm7ycY5s"
+        },
+        {
+          "name": "Long head tricep strech",
+          "description": "Hold towel in right hand overhead, let it hang behind back, grab bottom with left hand, gently pull down. Hold 30 seconds each side.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=N-oT_yu8p6c"
+        },
+        {
           "name": "Overhead Tricep Stretch",
           "description": "Raise right arm overhead, bend elbow so hand reaches toward left shoulder blade, use left hand to gently push elbow back. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=w4s-Sp_RDQA&t=35"
-        },
-        {
-          "name": "Towel Tricep Stretch",
-          "description": "Hold towel in right hand overhead, let it hang behind back, grab bottom with left hand, gently pull down. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=w4s-Sp_RDQA&t=135"
-        },
-        {
-          "name": "Cross-Body Tricep Stretch",
-          "description": "Bring right arm across chest, bend elbow, use left hand to gently push arm toward body. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=w4s-Sp_RDQA&t=225"
+          "youtubeUrl": "https://www.youtube.com/watch?v=qsyrvNY8uBA"
         }
       ]
     },
@@ -2411,7 +2656,7 @@
         {
           "name": "Elbow Extension Stretch",
           "description": "Extend arm straight with palm facing down. Use other hand to gently straighten elbow further. Hold 30 seconds each arm.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=ZnZjLpKRBYc&t=70"
+          "youtubeUrl": "https://youtu.be/ry8lUjavfr8?si=BjrHLZVT1JqWYCjb&t=24"
         }
       ]
     },
@@ -2499,7 +2744,7 @@
         {
           "name": "Forearm Pronation Stretch",
           "description": "Extend arm with thumb pointing up, use other hand to rotate forearm so palm faces down. Hold 30 seconds each arm.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=gDxRn36D8Vc&t=465"
+          "youtubeUrl": "https://www.youtube.com/watch?v=ZMjs-vJJ5c0"
         }
       ]
     },
@@ -2533,19 +2778,19 @@
       ],
       "stretches": [
         {
+          "name": "Forearm Roll with Ball",
+          "description": "Place forearm on tennis ball. Roll from elbow to wrist applying gentle pressure. Spend 1-2 minutes per arm to release tension.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=3cW1YnzT0_g"
+        },
+        {
           "name": "Prayer Stretch",
           "description": "Press palms together in front of chest, fingers pointing up. Lower hands while keeping palms together until you feel a stretch. Hold 20-30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u5H5_DqyBig&t=65"
+          "youtubeUrl": "https://youtu.be/XnJu70SLsJk?si=_08Z2wXiF0cf_Dm7&t=5"
         },
         {
           "name": "Pronation Stretch",
           "description": "Extend arm with palm up. Use other hand to gently turn palm down and away. Hold 20 seconds. Stretches supinator.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u5H5_DqyBig&t=130"
-        },
-        {
-          "name": "Forearm Roll with Ball",
-          "description": "Place forearm on tennis ball. Roll from elbow to wrist applying gentle pressure. Spend 1-2 minutes per arm to release tension.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u5H5_DqyBig&t=200"
+          "youtubeUrl": "https://www.youtube.com/watch?v=VV7zsl6LafM"
         }
       ]
     },
@@ -2582,19 +2827,19 @@
       ],
       "stretches": [
         {
-          "name": "Wrist Flexor Stretch",
-          "description": "Extend arm with palm up. Use other hand to gently pull fingers back toward body. Hold 20-30 seconds. Repeat 3 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K4yPoZoTQ08&t=42"
+          "name": "Inner Forearm Massage",
+          "description": "Use thumb to massage along the inner forearm from elbow to wrist. Apply firm but comfortable pressure. 2 minutes per arm.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=1Ap0k3EvEWc"
         },
         {
           "name": "Supination Stretch",
           "description": "Extend arm with palm down. Use other hand to rotate palm up and slightly back. Hold 20 seconds. Stretches pronator.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K4yPoZoTQ08&t=105"
+          "youtubeUrl": "https://youtu.be/ZxRp98_JpB8?si=stUEyRotQqj9e125&t=6"
         },
         {
-          "name": "Inner Forearm Massage",
-          "description": "Use thumb to massage along the inner forearm from elbow to wrist. Apply firm but comfortable pressure. 2 minutes per arm.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K4yPoZoTQ08&t=165"
+          "name": "Wrist Flexor Stretch",
+          "description": "Extend arm with palm up. Use other hand to gently pull fingers back toward body. Hold 20-30 seconds. Repeat 3 times.",
+          "youtubeUrl": "https://youtu.be/i-JV2PsFzWA?si=qO7HomMJl1hrwL2h&t=5"
         }
       ]
     },
@@ -2628,19 +2873,19 @@
       ],
       "stretches": [
         {
-          "name": "Triceps Stretch",
-          "description": "Raise one arm overhead, bend elbow so hand reaches toward opposite shoulder blade. Use other hand to gently push elbow back. Hold 20-30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3dCAi8jFbLY&t=55"
+          "name": "Behind Back Triceps Stretch",
+          "description": "Reach one arm behind back from below, other from above, try to clasp fingers. Hold 20 seconds each side. Use towel if hands don't reach.",
+          "youtubeUrl": "https://youtu.be/zzvDO56B0HE?si=3EH_FVdoSku3rNjH&t=3"
         },
         {
           "name": "Elbow Flexion Stretch",
           "description": "Extend arm straight, palm up. Use other hand to gently bend the elbow, bringing hand toward shoulder. Hold 20 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3dCAi8jFbLY&t=120"
+          "youtubeUrl": "https://youtu.be/apgO7gC8BiQ?si=_p6pnR6VLcIugEum&t=4"
         },
         {
-          "name": "Behind Back Triceps Stretch",
-          "description": "Reach one arm behind back from below, other from above, try to clasp fingers. Hold 20 seconds each side. Use towel if hands don't reach.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3dCAi8jFbLY&t=185"
+          "name": "Triceps Stretch",
+          "description": "Raise one arm overhead, bend elbow so hand reaches toward opposite shoulder blade. Use other hand to gently push elbow back. Hold 20-30 seconds.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=Uvk1Y8O1_yM"
         }
       ]
     },
@@ -2676,19 +2921,19 @@
       ],
       "stretches": [
         {
-          "name": "Wrist Extensor Stretch",
-          "description": "Extend arm with palm facing down. Use other hand to gently press knuckles down and toward you. Hold 20-30 seconds. Repeat 3 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=gsT7kZjhfXY&t=78"
+          "name": "Finger Extensor Stretch",
+          "description": "Make a fist, then extend fingers wide. Repeat 10 times. Then use other hand to gently curl all fingers into palm. Hold 15 seconds.",
+          "youtubeUrl": "https://youtu.be/y5x_berzthc?si=_0ZDdQhm3Zefo3Vg&t=7"
         },
         {
           "name": "Prayer Reverse Stretch",
           "description": "Press backs of hands together in front of chest, fingers pointing down. Raise elbows until you feel a stretch. Hold 20 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=gsT7kZjhfXY&t=145"
+          "youtubeUrl": "https://www.youtube.com/watch?v=-CaG5vGE2lA"
         },
         {
-          "name": "Finger Extensor Stretch",
-          "description": "Make a fist, then extend fingers wide. Repeat 10 times. Then use other hand to gently curl all fingers into palm. Hold 15 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=gsT7kZjhfXY&t=210"
+          "name": "Wrist Extensor Stretch",
+          "description": "Extend arm with palm facing down. Use other hand to gently press knuckles down and toward you. Hold 20-30 seconds. Repeat 3 times.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=yj7QdBxvHzQ"
         }
       ]
     },
@@ -2725,19 +2970,19 @@
       ],
       "stretches": [
         {
-          "name": "Wrist Flexor Stretch",
-          "description": "Extend arm with palm up and fingers pointing down. Gently pull fingers back with other hand. Hold 20-30 seconds. Repeat 3 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K4yPoZoTQ08&t=42"
-        },
-        {
           "name": "Finger Spread Stretch",
           "description": "Place palm flat on table, spread fingers wide. Gently press down to increase stretch. Hold 20 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K4yPoZoTQ08&t=180"
+          "youtubeUrl": "https://www.youtube.com/watch?v=evtqyqTiMLE"
         },
         {
           "name": "Forearm Flexor Massage",
           "description": "Use thumb to massage from inner elbow down to wrist along the flexor muscles. Apply firm pressure for 2 minutes per arm.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K4yPoZoTQ08&t=240"
+          "youtubeUrl": "https://youtu.be/WDBcsK_Y5LA?si=oZXhOIT-X_om60pQ&t=18"
+        },
+        {
+          "name": "Wrist Flexor Stretch",
+          "description": "Extend arm with palm up and fingers pointing down. Gently pull fingers back with other hand. Hold 20-30 seconds. Repeat 3 times.",
+          "youtubeUrl": "https://youtu.be/i-JV2PsFzWA?si=qO7HomMJl1hrwL2h&t=5"
         }
       ]
     },
@@ -2782,19 +3027,19 @@
       ],
       "stretches": [
         {
-          "name": "Thumb Extension Stretch",
-          "description": "Hold hand out flat. Use other hand to gently pull thumb away from palm and back. Hold 15-20 seconds. Repeat 3 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=TgVK9tH9RH0&t=62"
+          "name": "Thenar Massage",
+          "description": "Use opposite thumb to massage the fleshy pad at the base of your thumb in circular motions. 1-2 minutes per hand.",
+          "youtubeUrl": "https://youtu.be/PKvBrHlMEzA?si=xEtOJ9brDch3Z1PR&t=103"
         },
         {
           "name": "Thumb Circle Mobilization",
           "description": "Make slow, large circles with your thumb - 10 clockwise, 10 counterclockwise. Helps maintain mobility and reduce stiffness.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=TgVK9tH9RH0&t=125"
+          "youtubeUrl": "https://www.youtube.com/watch?v=NpOd_cZs-IY"
         },
         {
-          "name": "Thenar Massage",
-          "description": "Use opposite thumb to massage the fleshy pad at the base of your thumb in circular motions. 1-2 minutes per hand.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=TgVK9tH9RH0&t=180"
+          "name": "Thumb Extension Stretch",
+          "description": "Hold hand out flat. Use other hand to gently pull thumb away from palm and back. Hold 15-20 seconds. Repeat 3 times.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=rCtyXW-YdFI"
         }
       ]
     },
@@ -2830,19 +3075,19 @@
       ],
       "stretches": [
         {
+          "name": "Hypothenar Massage",
+          "description": "Use opposite thumb to massage the muscle pad on the pinky side of your palm. Circular motions for 1-2 minutes.",
+          "youtubeUrl": "https://youtu.be/fqDPhX8VqPc?si=aGy7cHERhnSDC5qV&t=14"
+        },
+        {
           "name": "Pinky Extension Stretch",
           "description": "Gently pull pinky finger back toward wrist using other hand. Hold 15 seconds. Repeat for ring finger also.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=TgVK9tH9RH0&t=240"
+          "youtubeUrl": "https://www.youtube.com/watch?v=htd6XmA_6VA"
         },
         {
           "name": "Wrist Ulnar Deviation Stretch",
           "description": "Hold arm out, palm down. Gently bend wrist so pinky side moves toward forearm. Hold 15-20 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=TgVK9tH9RH0&t=300"
-        },
-        {
-          "name": "Hypothenar Massage",
-          "description": "Use opposite thumb to massage the muscle pad on the pinky side of your palm. Circular motions for 1-2 minutes.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=TgVK9tH9RH0&t=355"
+          "youtubeUrl": ""
         }
       ]
     },
@@ -2878,19 +3123,19 @@
       ],
       "stretches": [
         {
+          "name": "Finger Abduction Exercise",
+          "description": "Place rubber band around all fingers. Spread fingers apart against resistance. Repeat 15 times. Strengthens intrinsics.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=mxG35cD-tuE"
+        },
+        {
           "name": "Finger Spread Stretch",
           "description": "Place palm flat on table. Spread fingers as wide as possible, hold 10 seconds, relax. Repeat 10 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=TgVK9tH9RH0&t=410"
+          "youtubeUrl": "https://www.youtube.com/watch?v=evtqyqTiMLE"
         },
         {
           "name": "Prayer Stretch",
           "description": "Press palms together in front of chest. Lower hands while keeping palms together until stretch felt. Hold 20-30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u5H5_DqyBig&t=65"
-        },
-        {
-          "name": "Finger Abduction Exercise",
-          "description": "Place rubber band around all fingers. Spread fingers apart against resistance. Repeat 15 times. Strengthens intrinsics.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=TgVK9tH9RH0&t=465"
+          "youtubeUrl": "https://youtu.be/XnJu70SLsJk?si=_08Z2wXiF0cf_Dm7&t=5"
         }
       ]
     },
@@ -2958,7 +3203,7 @@
         {
           "name": "Corner Stretch",
           "description": "Stand in corner, place forearms on walls at shoulder height, lean into corner until stretch is felt under collarbone. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=SH7zAAb5e94&t=90"
+          "youtubeUrl": "https://www.youtube.com/watch?v=1o7awuDGzag"
         }
       ]
     },
@@ -2990,12 +3235,12 @@
         {
           "name": "Side Stretch",
           "description": "Stand with feet hip-width, raise right arm overhead, lean to the left. Feel stretch along right side ribs. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KYTm-YhLU_s&t=405"
+          "youtubeUrl": "https://www.youtube.com/watch?v=-KPXtlEYVPM"
         },
         {
           "name": "Thoracic Rotation",
           "description": "Sit tall, place hands behind head, rotate upper body to the right, return to center, then to the left. 10 slow reps each direction.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=GR2k9Bt34MQ&t=225"
+          "youtubeUrl": "https://www.youtube.com/watch?v=QWwiOHexU8I"
         }
       ]
     },
@@ -3029,19 +3274,19 @@
       ],
       "stretches": [
         {
-          "name": "Doorway Chest Stretch",
-          "description": "Stand in doorway with forearms on frame at 90 degrees. Step forward to stretch chest and front of shoulders. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=SQ-L5JAyWmo&t=48"
-        },
-        {
           "name": "Corner Stretch",
           "description": "Face a corner, place forearms on each wall at shoulder height. Lean in toward corner. Hold 30 seconds. Great for pecs and subclavius.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=SQ-L5JAyWmo&t=130"
+          "youtubeUrl": "https://www.youtube.com/watch?v=1o7awuDGzag"
+        },
+        {
+          "name": "Doorway Chest Stretch",
+          "description": "Stand in doorway with forearms on frame at 90 degrees. Step forward to stretch chest and front of shoulders. Hold 30 seconds.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=B9uY01NoqBg"
         },
         {
           "name": "Shoulder Roll and Shrug Release",
           "description": "Roll shoulders backward 10 times, then shrug shoulders up to ears, hold 5 seconds, release. Repeat 5 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=SQ-L5JAyWmo&t=200"
+          "youtubeUrl": "https://youtu.be/ja_P3YhmAlE?si=SlRT5uWTiUATwdYQ&t=5"
         }
       ]
     },
@@ -3069,14 +3314,14 @@
       ],
       "stretches": [
         {
-          "name": "Wall Slide",
-          "description": "Stand with back against wall, arms at 90\u00b0. Slowly slide arms up the wall, keeping contact. Lower slowly. 2 sets of 10.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=Jy0Mxa_aqQE&t=165"
-        },
-        {
           "name": "Push-Up Plus",
           "description": "In push-up position, let chest sink slightly, then push up through shoulder blades to round upper back. 2 sets of 10.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=Jy0Mxa_aqQE&t=270"
+          "youtubeUrl": "https://www.youtube.com/watch?v=RFbjeyq_ZPc"
+        },
+        {
+          "name": "Wall Slide",
+          "description": "Stand with back against wall, arms at 90\u00b0. Slowly slide arms up the wall, keeping contact. Lower slowly. 2 sets of 10.",
+          "youtubeUrl": "https://youtu.be/70UxCj6AoPo?si=y2C8Tj0I1FVoHwol&t=226"
         }
       ]
     },
@@ -3098,14 +3343,14 @@
       ],
       "stretches": [
         {
-          "name": "Diaphragmatic Breathing",
-          "description": "Lie on back with knees bent, place one hand on chest and one on belly. Breathe so only belly hand rises. 5 minutes, 3 times daily.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KYTm-YhLU_s&t=135"
-        },
-        {
           "name": "Box Breathing",
           "description": "Breathe in for 4 counts, hold for 4 counts, breathe out for 4 counts, hold for 4 counts. Repeat 4-6 cycles.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KYTm-YhLU_s&t=270"
+          "youtubeUrl": "https://www.youtube.com/watch?v=tEmt1Znux58"
+        },
+        {
+          "name": "Diaphragmatic Breathing",
+          "description": "Lie on back with knees bent, place one hand on chest and one on belly. Breathe so only belly hand rises. 5 minutes, 3 times daily.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=g2wo2Impnfg"
         }
       ]
     },
@@ -3142,17 +3387,17 @@
         {
           "name": "Cross-Arm Stretch",
           "description": "Reach right arm across chest, use left hand to pull it closer until you feel stretch between shoulder blades. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=lnYlxW8mRd4&t=60"
-        },
-        {
-          "name": "Thread the Needle",
-          "description": "On all fours, reach right arm under body to the left, let right shoulder drop toward floor. Feel stretch between shoulder blades. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=CeXLTmPotYI&t=270"
+          "youtubeUrl": "https://www.youtube.com/watch?v=-1K0m5ywRcY"
         },
         {
           "name": "Tennis Ball Wall Massage",
           "description": "Place tennis ball between shoulder blade and wall, lean into ball and make small movements to massage. 1-2 minutes each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=lnYlxW8mRd4&t=180"
+          "youtubeUrl": "https://youtu.be/bFI6hGRa-hg?si=ydXIHDTDjAfm4dMp&t=6"
+        },
+        {
+          "name": "Thread the Needle",
+          "description": "On all fours, reach right arm under body to the left, let right shoulder drop toward floor. Feel stretch between shoulder blades. Hold 30 seconds.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=rlac1t_QQJM"
         }
       ]
     },
@@ -3186,19 +3431,19 @@
       ],
       "stretches": [
         {
-          "name": "Cross Arm Stretch",
-          "description": "Bring one arm across chest. Use other arm to gently pull it closer. Hold 20-30 seconds each side. Stretches posterior shoulder and mid traps.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=7bVlZk8Q55E&t=85"
-        },
-        {
           "name": "Cat Stretch",
           "description": "On hands and knees, round your upper back toward ceiling, letting shoulder blades spread apart. Hold 20 seconds. Repeat 5 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=7bVlZk8Q55E&t=150"
+          "youtubeUrl": "https://youtu.be/Y-s5X4yKPCs?si=lNe2HGyvYnzp5m5r&t=4"
         },
         {
           "name": "Clasped Hands Forward Reach",
           "description": "Interlace fingers, push palms away from you while rounding upper back. Feel stretch between shoulder blades. Hold 20-30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=7bVlZk8Q55E&t=215"
+          "youtubeUrl": "https://www.youtube.com/watch?v=BZT-GBZ--I0"
+        },
+        {
+          "name": "Cross Arm Stretch",
+          "description": "Bring one arm across chest. Use other arm to gently pull it closer. Hold 20-30 seconds each side. Stretches posterior shoulder and mid traps.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=-1K0m5ywRcY"
         }
       ]
     },
@@ -3232,19 +3477,19 @@
       ],
       "stretches": [
         {
+          "name": "Prone T-Raise",
+          "description": "Lie face down, arms out to sides in T position. Lift arms while squeezing shoulder blades together. Hold 5 seconds. Repeat 10 times.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=3GJoiYUYwr0"
+        },
+        {
           "name": "Prone Y-Raise",
           "description": "Lie face down, arms in Y position above head. Lift arms slightly while squeezing shoulder blades. Hold 5 seconds. Repeat 10 times. Strengthens lower traps.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=7bVlZk8Q55E&t=280"
+          "youtubeUrl": "https://www.youtube.com/watch?v=w1AWGKubE5U"
         },
         {
           "name": "Thread the Needle",
           "description": "On hands and knees, reach one arm under your body, rotating torso. Let shoulder come to floor. Hold 20-30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=7bVlZk8Q55E&t=345"
-        },
-        {
-          "name": "Prone T-Raise",
-          "description": "Lie face down, arms out to sides in T position. Lift arms while squeezing shoulder blades together. Hold 5 seconds. Repeat 10 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=7bVlZk8Q55E&t=410"
+          "youtubeUrl": "https://www.youtube.com/watch?v=rlac1t_QQJM"
         }
       ]
     },
@@ -3274,12 +3519,12 @@
         {
           "name": "Child's Pose with Side Reach",
           "description": "Kneel, sit back on heels, reach arms forward on floor, then walk hands to one side. Feel stretch along side of back. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KYTm-YhLU_s&t=270"
+          "youtubeUrl": "https://www.youtube.com/watch?v=YTAwpiX2Dsg"
         },
         {
           "name": "Overhead Lat Stretch",
           "description": "Hold onto doorframe or pole at overhead height, step back and push hips back, letting chest drop between arms. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=8sYcL0cH-xI&t=45"
+          "youtubeUrl": "https://www.youtube.com/watch?v=OX5NZLkidtY"
         }
       ]
     },
@@ -3319,17 +3564,17 @@
         {
           "name": "Cat-Cow Stretch",
           "description": "On hands and knees, alternate between arching back (cow) and rounding back (cat). Move slowly, 10-15 repetitions. Mobilizes entire spine.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=kqnua4rHVVA&t=60"
-        },
-        {
-          "name": "Seated Thoracic Rotation",
-          "description": "Sit on chair, cross arms over chest. Rotate upper body to one side, hold 15 seconds. Repeat other side. Mobilizes thoracic spine.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=kqnua4rHVVA&t=140"
+          "youtubeUrl": "https://www.youtube.com/watch?v=LIVJZZyZ2qM"
         },
         {
           "name": "Foam Roller Thoracic Extension",
           "description": "Lie on foam roller positioned across mid-back. Support head, let back extend over roller. Move roller up and down spine. 2-3 minutes.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=kqnua4rHVVA&t=210"
+          "youtubeUrl": "https://www.youtube.com/watch?v=81kPLsMt6wY"
+        },
+        {
+          "name": "Seated Thoracic Rotation",
+          "description": "Sit on chair, cross arms over chest. Rotate upper body to one side, hold 15 seconds. Repeat other side. Mobilizes thoracic spine.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=pLerj04KsHw"
         }
       ]
     },
@@ -3365,17 +3610,17 @@
         {
           "name": "Child's Pose",
           "description": "Kneel and sit back on heels, reach arms forward on floor, let chest sink toward ground. Hold 30-60 seconds. Stretches upper back.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=kqnua4rHVVA&t=275"
-        },
-        {
-          "name": "Doorway Lat Stretch",
-          "description": "Hold doorframe overhead, step through and lean forward. Let arm stretch behind while torso moves forward. Hold 20-30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=MO7zSBI4GJY&t=150"
+          "youtubeUrl": "https://www.youtube.com/watch?v=_ZX_zTOBgp8"
         },
         {
           "name": "Deep Breathing with Arm Reach",
           "description": "Inhale deeply while reaching both arms overhead. Exhale slowly while lowering. Repeat 10 times. Helps mobilize rib muscles.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=kqnua4rHVVA&t=340"
+          "youtubeUrl": "https://www.youtube.com/watch?v=wOBGNsTgklU"
+        },
+        {
+          "name": "Doorway Lat Stretch",
+          "description": "Hold doorframe overhead, step through and lean forward. Let arm stretch behind while torso moves forward. Hold 20-30 seconds each side.",
+          "youtubeUrl": "https://youtu.be/SAZDip5crww?si=gaAZXg8v4FHBn44Z&t=14"
         }
       ]
     },
@@ -3415,19 +3660,19 @@
       ],
       "stretches": [
         {
-          "name": "Side-Lying QL Stretch",
-          "description": "Lie on pain-free side, top leg behind you off the bed, reach top arm overhead. Feel stretch in side of low back. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KYTm-YhLU_s&t=135"
+          "name": "Child's Pose with Side Reach",
+          "description": "Start in child's pose (kneeling, sitting on heels, arms extended), walk hands to the left, feel stretch on right side. Hold 30 seconds each side.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=YTAwpiX2Dsg"
         },
         {
-          "name": "Child's Pose Side Reach",
-          "description": "Start in child's pose (kneeling, sitting on heels, arms extended), walk hands to the left, feel stretch on right side. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KYTm-YhLU_s&t=270"
+          "name": "Side-Lying QL Stretch",
+          "description": "Lie on pain-free side, top leg behind you off the bed, reach top arm overhead. Feel stretch in side of low back. Hold 30 seconds.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=g6OiLX8AEGs"
         },
         {
           "name": "Standing Side Bend",
           "description": "Stand with feet hip-width apart, reach right arm overhead and bend to the left. Keep hips still. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KYTm-YhLU_s&t=405"
+          "youtubeUrl": "https://www.youtube.com/watch?v=wY9nQ-yfRwo"
         }
       ]
     },
@@ -3491,17 +3736,17 @@
         {
           "name": "Bird-Dog Exercise",
           "description": "On hands and knees, extend opposite arm and leg. Hold 5-10 seconds. Alternate sides. Repeat 10 each side. Activates multifidus.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wiFNA3sqjCA&t=75"
-        },
-        {
-          "name": "Quadruped Rock Back",
-          "description": "On hands and knees, slowly rock hips back toward heels, then forward. Keep spine neutral. Repeat 15-20 times. Mobilizes lumbar spine.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wiFNA3sqjCA&t=145"
+          "youtubeUrl": "https://www.youtube.com/watch?v=QABW99qPiNM"
         },
         {
           "name": "Dead Bug Exercise",
           "description": "Lie on back, arms pointing up, knees bent 90 degrees. Slowly lower opposite arm and leg. Keep low back pressed to floor. Strengthens deep core.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wiFNA3sqjCA&t=210"
+          "youtubeUrl": "https://www.youtube.com/watch?v=o4GKiEoYClI"
+        },
+        {
+          "name": "Quadruped Rock Back",
+          "description": "On hands and knees, slowly rock hips back toward heels, then forward. Keep spine neutral. Repeat 15-20 times. Mobilizes lumbar spine.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=aKZGoeHtJ0o"
         }
       ]
     },
@@ -3535,19 +3780,19 @@
       ],
       "stretches": [
         {
+          "name": "Prone Press Up",
+          "description": "Lie face down, hands by shoulders. Press upper body up while keeping hips on floor. Hold 10 seconds. Repeat 10 times. Extends lower back.",
+          "youtubeUrl": "https://youtu.be/UqSP7ZrHxRE?si=D4TYGGGXt8MZRpxB&t=5"
+        },
+        {
           "name": "Seated Side Bend",
           "description": "Sit tall, reach one arm overhead and lean to opposite side. Hold 20-30 seconds. Repeat other side. Stretches side of back and ribs.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=l_gWIxHt73U&t=55"
+          "youtubeUrl": "https://www.youtube.com/watch?v=jKcHh78Y_JE"
         },
         {
           "name": "Thread the Needle",
           "description": "On hands and knees, reach one arm under body rotating torso. Let shoulder come toward floor. Hold 20-30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=7bVlZk8Q55E&t=345"
-        },
-        {
-          "name": "Prone Press Up",
-          "description": "Lie face down, hands by shoulders. Press upper body up while keeping hips on floor. Hold 10 seconds. Repeat 10 times. Extends lower back.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wiFNA3sqjCA&t=275"
+          "youtubeUrl": "https://www.youtube.com/watch?v=rlac1t_QQJM"
         }
       ]
     },
@@ -3583,17 +3828,17 @@
         {
           "name": "Child's Pose",
           "description": "Kneel and sit back on heels, reach arms forward, let chest sink to floor. Hold 30-60 seconds. Stretches entire back.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=kqnua4rHVVA&t=275"
-        },
-        {
-          "name": "Foam Roller Low Back",
-          "description": "Sit on foam roller, support yourself with hands. Roll from lower back to mid-back. Avoid rolling directly on spine. 2-3 minutes.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wiFNA3sqjCA&t=340"
+          "youtubeUrl": "https://www.youtube.com/watch?v=_ZX_zTOBgp8"
         },
         {
           "name": "Figure 4 Hip Stretch",
           "description": "Lie on back, cross one ankle over opposite knee. Pull bottom thigh toward chest. Hold 30 seconds each side. Releases fascia through hips.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=l_gWIxHt73U&t=130"
+          "youtubeUrl": "https://www.youtube.com/watch?v=Xb5gHdYtHnk"
+        },
+        {
+          "name": "Foam Roller Low Back",
+          "description": "Sit on foam roller, support yourself with hands. Roll from lower back to mid-back. Avoid rolling directly on spine. 2-3 minutes.",
+          "youtubeUrl": "https://youtu.be/MnWWDAsEfXk?si=ob8a4aTQgtMBlKli&t=12"
         }
       ]
     },
@@ -3623,12 +3868,12 @@
         {
           "name": "Cobra Stretch",
           "description": "Lie face down, place hands under shoulders, push upper body up while keeping hips on floor. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=GR2k9Bt34MQ&t=330"
+          "youtubeUrl": "https://www.youtube.com/watch?v=Nd3j6Avtv6Q"
         },
         {
           "name": "Standing Back Extension",
           "description": "Stand with hands on lower back, gently lean back looking at ceiling. Hold 5 seconds, repeat 10 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=GR2k9Bt34MQ&t=60"
+          "youtubeUrl": "https://www.youtube.com/watch?v=TpIL3IvBk8k"
         }
       ]
     },
@@ -3658,7 +3903,7 @@
         {
           "name": "Seated Twist",
           "description": "Sit tall with legs extended, bend right knee and cross over left leg. Twist torso to the right, using left elbow against right knee. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=GR2k9Bt34MQ&t=225"
+          "youtubeUrl": "https://youtu.be/qEVNj4tcr0Y?si=NHfDv0qX462rfxvr&t=7"
         }
       ]
     },
@@ -3692,19 +3937,19 @@
       ],
       "stretches": [
         {
-          "name": "Standing Side Stretch",
-          "description": "Stand tall, reach one arm overhead and lean to opposite side. Hold 20-30 seconds. Repeat other side. Stretches obliques.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=l_gWIxHt73U&t=55"
-        },
-        {
           "name": "Lying Trunk Rotation",
           "description": "Lie on back, knees bent. Let knees fall to one side while keeping shoulders flat. Hold 20-30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=l_gWIxHt73U&t=195"
+          "youtubeUrl": "https://youtu.be/PX_tIQQIWu0?si=OzuPNMcJttKMAUm9&t=5"
         },
         {
           "name": "Seated Spinal Twist",
           "description": "Sit with legs extended. Bend one knee, cross foot over other leg. Rotate torso toward bent knee. Hold 20-30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=l_gWIxHt73U&t=260"
+          "youtubeUrl": "https://youtu.be/qEVNj4tcr0Y?si=NHfDv0qX462rfxvr&t=7"
+        },
+        {
+          "name": "Standing Side Stretch",
+          "description": "Stand tall, reach one arm overhead and lean to opposite side. Hold 20-30 seconds. Repeat other side. Stretches obliques.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=-KPXtlEYVPM"
         }
       ]
     },
@@ -3738,19 +3983,19 @@
       ],
       "stretches": [
         {
-          "name": "Diaphragmatic Breathing",
-          "description": "Lie on back, knees bent. Place hand on belly. Breathe deeply so belly rises. Exhale slowly drawing belly button toward spine. Repeat 10 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wiFNA3sqjCA&t=395"
+          "name": "Cobra Stretch",
+          "description": "Lie face down, hands by shoulders. Press up while keeping hips on floor. Hold 20-30 seconds. Stretches front of abdomen.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=Nd3j6Avtv6Q"
         },
         {
           "name": "Dead Bug Core Activation",
           "description": "Lie on back, arms up, knees bent 90 degrees. Slowly lower opposite arm and leg while keeping low back flat. Activates deep core.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=wiFNA3sqjCA&t=210"
+          "youtubeUrl": "https://www.youtube.com/watch?v=o4GKiEoYClI"
         },
         {
-          "name": "Cobra Stretch",
-          "description": "Lie face down, hands by shoulders. Press up while keeping hips on floor. Hold 20-30 seconds. Stretches front of abdomen.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=l_gWIxHt73U&t=325"
+          "name": "Diaphragmatic Breathing",
+          "description": "Lie on back, knees bent. Place hand on belly. Breathe deeply so belly rises. Exhale slowly drawing belly button toward spine. Repeat 10 times.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=g2wo2Impnfg"
         }
       ]
     },
@@ -3792,17 +4037,17 @@
         {
           "name": "Figure-4 Stretch",
           "description": "Lie on back, cross right ankle over left knee, pull left thigh toward chest. Feel stretch in right buttock. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K8F0mLfvCOY&t=50"
+          "youtubeUrl": "https://www.youtube.com/watch?v=Xb5gHdYtHnk"
         },
         {
           "name": "Glute Bridge",
           "description": "Lie on back with knees bent, feet flat. Squeeze glutes and lift hips toward ceiling. Hold 5 seconds at top, lower slowly. 15 reps.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K8F0mLfvCOY&t=195"
+          "youtubeUrl": "https://www.youtube.com/watch?v=OUgsJ8-Vi0E"
         },
         {
           "name": "Pigeon Pose",
           "description": "From all fours, bring right knee forward behind right wrist, extend left leg back. Lower hips and hold stretch. 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K8F0mLfvCOY&t=330"
+          "youtubeUrl": "https://www.youtube.com/watch?v=1o7awuDGzag"
         }
       ]
     },
@@ -3836,19 +4081,19 @@
       ],
       "stretches": [
         {
+          "name": "Resistance Band Side Walk",
+          "description": "Place resistance band around ankles, bend knees slightly, take sideways steps keeping tension on band. 2 sets of 15 steps each direction.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=F4RomawdfJ8"
+        },
+        {
           "name": "Side-Lying Clamshell",
           "description": "Lie on side with knees bent 90\u00b0, keep feet together, lift top knee while keeping hips stacked. Hold 2 seconds, lower slowly. 3 sets of 15.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=HUXS3S2_jdI&t=45"
+          "youtubeUrl": "https://www.youtube.com/watch?v=DAAjOdwZdks"
         },
         {
           "name": "Standing Hip Abductor Stretch",
           "description": "Cross right leg behind left, lean hips to the right until you feel a stretch on the outside of right hip. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=_sVZ6EhEKJg&t=30"
-        },
-        {
-          "name": "Resistance Band Side Walk",
-          "description": "Place resistance band around ankles, bend knees slightly, take sideways steps keeping tension on band. 2 sets of 15 steps each direction.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=GHuv1dYwVYc&t=60"
+          "youtubeUrl": "https://youtu.be/qBqKuEQl9sI?si=0i1o_ceEn8q33FTl&t=5"
         }
       ]
     },
@@ -3878,12 +4123,12 @@
         {
           "name": "Figure-4 Stretch",
           "description": "Lie on back, cross right ankle over left knee, pull left thigh toward chest. Feel stretch deep in right buttock. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K8F0mLfvCOY&t=50"
+          "youtubeUrl": "https://www.youtube.com/watch?v=Xb5gHdYtHnk"
         },
         {
           "name": "Pigeon Pose",
           "description": "From all fours, bring right knee forward behind right wrist, extend left leg back. Lower hips toward floor. Hold 30-60 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=K8F0mLfvCOY&t=330"
+          "youtubeUrl": "https://www.youtube.com/watch?v=1o7awuDGzag"
         }
       ]
     },
@@ -3917,19 +4162,19 @@
       ],
       "stretches": [
         {
-          "name": "Supine Piriformis Stretch",
-          "description": "Lie on back, cross right ankle over left knee, pull left thigh toward opposite shoulder (not straight up). Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=UR5dapX8ZKc&t=80"
+          "name": "Lying Figure-4 Against Wall",
+          "description": "Lie near wall, place left foot on wall with knee bent, cross right ankle over left knee, scoot closer to wall to increase stretch. Hold 30 seconds.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=6KWuCivRhLc"
         },
         {
           "name": "Seated Piriformis Stretch",
           "description": "Sit tall in chair, cross right ankle over left knee, lean forward with straight back until you feel stretch in right buttock. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=UR5dapX8ZKc&t=225"
+          "youtubeUrl": "https://www.youtube.com/watch?v=JR1rtQ-PF38"
         },
         {
-          "name": "Lying Figure-4 Against Wall",
-          "description": "Lie near wall, place left foot on wall with knee bent, cross right ankle over left knee, scoot closer to wall to increase stretch. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=UR5dapX8ZKc&t=330"
+          "name": "Supine Piriformis Stretch",
+          "description": "Lie on back, cross right ankle over left knee, pull left thigh toward opposite shoulder (not straight up). Hold 30 seconds each side.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=eKp2f5-jRbI"
         }
       ]
     },
@@ -3973,17 +4218,17 @@
         {
           "name": "Kneeling Hip Flexor Stretch",
           "description": "Kneel on right knee (pad under knee), left foot in front. Tuck tailbone under, lean forward slightly. Feel stretch at front of right hip. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=UGEpQ1BRx-4&t=75"
-        },
-        {
-          "name": "Thomas Stretch",
-          "description": "Lie on edge of bed, pull left knee to chest, let right leg hang off edge. Relax right leg completely. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=UGEpQ1BRx-4&t=240"
+          "youtubeUrl": "https://youtu.be/Q4Ko275cluo?si=i7IckHlzAxLXXI5r&t=16"
         },
         {
           "name": "Standing Hip Flexor Stretch",
           "description": "Step right foot far back in a lunge, tuck tailbone under, raise right arm and lean slightly left. Feel stretch at front of right hip. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=UGEpQ1BRx-4&t=390"
+          "youtubeUrl": "https://youtu.be/07_GSDtqUuQ?si=rmB534tjbEsxoptN&t=4"
+        },
+        {
+          "name": "Thomas Stretch",
+          "description": "Lie on edge of bed, pull left knee to chest, let right leg hang off edge. Relax right leg completely. Hold 30 seconds each side.",
+          "youtubeUrl": "https://youtu.be/Q0XiUq9TJ2w?si=K--tCcKToXUqOiEN&t=3"
         }
       ]
     },
@@ -4011,14 +4256,14 @@
       ],
       "stretches": [
         {
-          "name": "Standing TFL Stretch",
-          "description": "Stand with right leg crossed behind left, shift hips to the right while reaching right arm overhead to the left. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=XPBYXXiSSbg&t=45"
-        },
-        {
           "name": "IT Band Foam Roll",
           "description": "Lie on side with foam roller under outer thigh, roll slowly from hip to just above knee. Spend extra time on tender spots. 1-2 minutes each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=XPBYXXiSSbg&t=180"
+          "youtubeUrl": "https://www.youtube.com/watch?v=eI9qLfSlCuI"
+        },
+        {
+          "name": "Standing TFL Stretch",
+          "description": "Stand with right leg crossed behind left, shift hips to the right while reaching right arm overhead to the left. Hold 30 seconds each side.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=q9ZHa9Fgblw"
         }
       ]
     },
@@ -4052,7 +4297,7 @@
         {
           "name": "Seated Hip Rotation",
           "description": "Sit tall in chair, cross right ankle over left knee, gently press down on right knee while keeping back straight. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=UR5dapX8ZKc&t=225"
+          "youtubeUrl": "https://youtu.be/D72qGBKl468?si=fiO6tji2dB4AEvMV&t=25"
         }
       ]
     },
@@ -4089,19 +4334,19 @@
       ],
       "stretches": [
         {
-          "name": "Standing Quad Stretch",
-          "description": "Stand on left leg (hold wall for balance), bend right knee and grab ankle, pull heel toward buttock. Keep knees together. Hold 30 seconds each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3PRP9stLoUk&t=40"
+          "name": "Couch Stretch",
+          "description": "Kneel with right knee near wall, foot up on wall, left foot forward in lunge. Keep core tight, lean back slightly. Intense stretch. Hold 30-60 seconds.",
+          "youtubeUrl": "https://youtu.be/Fg-lwNBzVV8?si=3C56qn0r0iMsQp4_&t=11"
         },
         {
           "name": "Lying Quad Stretch",
           "description": "Lie face down, bend right knee, reach back to grab ankle, gently pull heel toward buttock. More intense than standing. Hold 30 seconds each.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3PRP9stLoUk&t=135"
+          "youtubeUrl": "https://youtu.be/SapC8SML6mc?si=pOFOWGXufwCaHw3e&t=4"
         },
         {
-          "name": "Couch Stretch",
-          "description": "Kneel with right knee near wall, foot up on wall, left foot forward in lunge. Keep core tight, lean back slightly. Intense stretch. Hold 30-60 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3PRP9stLoUk&t=270"
+          "name": "Standing Quad Stretch",
+          "description": "Stand on left leg (hold wall for balance), bend right knee and grab ankle, pull heel toward buttock. Keep knees together. Hold 30 seconds each leg.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=zi5__zBRzYc"
         }
       ]
     },
@@ -4145,19 +4390,19 @@
       ],
       "stretches": [
         {
-          "name": "Standing Hamstring Stretch",
-          "description": "Place heel on chair or step, keep back straight, hinge forward at hips until you feel stretch behind thigh. Don't round back. Hold 30 seconds each.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=b0tPoynhsos&t=70"
+          "name": "Doorway Hamstring Stretch",
+          "description": "Lie in doorway, raise one leg up to rest on door frame, other leg flat through doorway. Scoot closer for more stretch. Hold 30-60 seconds.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=VWk9QD10Xjg"
         },
         {
           "name": "Lying Hamstring Stretch with Strap",
           "description": "Lie on back, loop strap/towel around foot, straighten leg toward ceiling, gently pull leg toward you. Hold 30 seconds each.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=b0tPoynhsos&t=210"
+          "youtubeUrl": "https://youtu.be/Il1L75v6gq0?si=aq5AT0WBAyDRT6De&t=4"
         },
         {
-          "name": "Doorway Hamstring Stretch",
-          "description": "Lie in doorway, raise one leg up to rest on door frame, other leg flat through doorway. Scoot closer for more stretch. Hold 30-60 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=b0tPoynhsos&t=345"
+          "name": "Standing Hamstring Stretch",
+          "description": "Place heel on chair or step, keep back straight, hinge forward at hips until you feel stretch behind thigh. Don't round back. Hold 30 seconds each.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=LVY692zJK0A"
         }
       ]
     },
@@ -4198,17 +4443,17 @@
         {
           "name": "Butterfly Stretch",
           "description": "Sit with soles of feet together, knees out to sides. Hold feet, sit tall, gently press knees toward floor with elbows. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=D6P1bvYBZhQ&t=55"
-        },
-        {
-          "name": "Standing Adductor Stretch",
-          "description": "Take wide stance, shift weight to right, bend right knee while keeping left leg straight. Feel stretch on left inner thigh. Hold 30 seconds each.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=D6P1bvYBZhQ&t=160"
+          "youtubeUrl": "https://www.youtube.com/watch?v=v4OLkxi5-Q0"
         },
         {
           "name": "Frog Stretch",
           "description": "On all fours, spread knees wide apart with feet turned out, slowly sink hips back and down. Use padding under knees. Hold 30-60 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=D6P1bvYBZhQ&t=270"
+          "youtubeUrl": "https://www.youtube.com/watch?v=zXeCtwJoiGw"
+        },
+        {
+          "name": "Standing Adductor Stretch",
+          "description": "Take wide stance, shift weight to right, bend right knee while keeping left leg straight. Feel stretch on left inner thigh. Hold 30 seconds each.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=Q4QEtbRbPzU"
         }
       ]
     },
@@ -4238,7 +4483,7 @@
         {
           "name": "Modified Hip Flexor Stretch",
           "description": "Kneeling hip flexor stretch, but rotate back hip outward slightly. This targets the sartorius more specifically. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=UGEpQ1BRx-4&t=75"
+          "youtubeUrl": "https://www.youtube.com/watch?v=DXuStgWuJV8"
         }
       ]
     },
@@ -4272,19 +4517,19 @@
       ],
       "stretches": [
         {
-          "name": "Standing IT Band Stretch",
-          "description": "Cross one leg behind the other, lean away from back leg toward wall. Hold 30 seconds. Feel stretch on outer thigh of back leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=5WlkWjg-HKE&t=95"
+          "name": "Figure 4 Glute Stretch",
+          "description": "Lie on back, cross one ankle over opposite knee. Pull bottom thigh toward chest. Hold 30 seconds each side. Releases tension that affects IT band.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=Xb5gHdYtHnk"
         },
         {
           "name": "Foam Roll TFL and Glutes",
           "description": "Position foam roller under outer hip. Roll from hip to mid-thigh, focusing on TFL muscle (front of hip). Avoid rolling directly on IT band. 2 minutes each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=5WlkWjg-HKE&t=165"
+          "youtubeUrl": "https://youtu.be/n5J14_gRbME?si=-ANea8vAria5XA-M&t=51"
         },
         {
-          "name": "Figure 4 Glute Stretch",
-          "description": "Lie on back, cross one ankle over opposite knee. Pull bottom thigh toward chest. Hold 30 seconds each side. Releases tension that affects IT band.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=5WlkWjg-HKE&t=240"
+          "name": "Standing IT Band Stretch",
+          "description": "Cross one leg behind the other, lean away from back leg toward wall. Hold 30 seconds. Feel stretch on outer thigh of back leg.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=q9ZHa9Fgblw"
         }
       ]
     },
@@ -4342,12 +4587,12 @@
         {
           "name": "Bent Knee Calf Stretch",
           "description": "Wall calf stretch but with back knee bent - this targets popliteus. Keep heel down, bend knee, lean forward. Hold 30 seconds each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KS6HJqkfUvI&t=130"
+          "youtubeUrl": "https://www.youtube.com/watch?v=TCDlyg8psFE"
         },
         {
           "name": "Seated Hamstring with Rotation",
           "description": "Seated hamstring stretch, but rotate foot inward. This adds rotation that targets popliteus. Hold 30 seconds each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=b0tPoynhsos&t=70"
+          "youtubeUrl": "https://youtu.be/1RpHJyzk2xI?si=t49I_UfT2yxAQhuZ&t=7"
         }
       ]
     },
@@ -4437,19 +4682,19 @@
       ],
       "stretches": [
         {
-          "name": "Wall Calf Stretch",
-          "description": "Face wall, one foot back with heel down. Lean forward keeping back knee straight. Hold 30 seconds each leg. Stretches gastrocnemius and Achilles.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u59db2PhbV4&t=65"
-        },
-        {
           "name": "Eccentric Heel Drop",
           "description": "Stand on step with heels hanging off. Rise up on toes, then slowly lower heels below step level. Repeat 15 times. Key exercise for Achilles.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u59db2PhbV4&t=140"
+          "youtubeUrl": "https://www.youtube.com/watch?v=3tc0lN_bW5o"
         },
         {
           "name": "Soleus Stretch",
           "description": "Same as wall stretch but with back knee slightly bent. This targets the soleus and lower Achilles. Hold 30 seconds each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u59db2PhbV4&t=205"
+          "youtubeUrl": "https://www.youtube.com/watch?v=Zmc36LtB7f8"
+        },
+        {
+          "name": "Wall Calf Stretch",
+          "description": "Face wall, one foot back with heel down. Lean forward keeping back knee straight. Hold 30 seconds each leg. Stretches gastrocnemius and Achilles.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=mafo7o7OnFo"
         }
       ]
     },
@@ -4485,17 +4730,17 @@
         {
           "name": "Kneeling Shin Stretch",
           "description": "Kneel on padded surface with tops of feet flat on floor, sit back on heels. Feel stretch in front of shins. Hold 30 seconds.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=73H6wQBJbLM&t=80"
+          "youtubeUrl": "https://youtu.be/Ox8K3WU78xE?si=-0KeIYiqAPgXobTk&t=9"
+        },
+        {
+          "name": "Seated Shin Stretch",
+          "description": "Stand, place top of right foot on floor behind you, gently press down to feel stretch in shin. Hold 30 seconds each leg.",
+          "youtubeUrl": "https://youtu.be/olpUrL-w2qg?si=sU6-TZ3L4OE0lhCi&t=224"
         },
         {
           "name": "Toe Raises",
           "description": "Stand with back against wall, lift toes off ground keeping heels down. Hold 5 seconds, repeat 15-20 times. Strengthens shin muscles.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=73H6wQBJbLM&t=190"
-        },
-        {
-          "name": "Standing Shin Stretch",
-          "description": "Stand, place top of right foot on floor behind you, gently press down to feel stretch in shin. Hold 30 seconds each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=73H6wQBJbLM&t=285"
+          "youtubeUrl": "https://youtu.be/gRHg6v6-szc?si=5m64W1OJloaTnLCL&t=4"
         }
       ]
     },
@@ -4525,12 +4770,12 @@
         {
           "name": "Calf Stretch with Arch Focus",
           "description": "Standard wall calf stretch, but focus on pressing inner arch toward floor. Hold 30 seconds each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KS6HJqkfUvI&t=50"
+          "youtubeUrl": "https://www.youtube.com/watch?v=0gdai2ji4P0"
         },
         {
           "name": "Toe Raises with Inversion",
           "description": "Stand on both feet, rise onto toes while turning feet slightly inward. Lower slowly. 3 sets of 15. Strengthens tibialis posterior.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KS6HJqkfUvI&t=315"
+          "youtubeUrl": "https://youtu.be/DDf9FNsJ4zQ?si=8MWnoCfPvu5gPjBF&t=8"
         }
       ]
     },
@@ -4562,12 +4807,12 @@
         {
           "name": "Ankle Inversion Stretch",
           "description": "Sit with ankle crossed over knee, gently turn sole of foot inward until stretch is felt on outer lower leg. Hold 30 seconds each side.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KS6HJqkfUvI&t=50"
+          "youtubeUrl": "https://youtu.be/KQ19_8Y-Yj4?si=OyRHqEFo1ZM0na1B&t=6"
         },
         {
           "name": "Single Leg Balance",
           "description": "Stand on one foot for 30 seconds. Progress to eyes closed or on unstable surface. Strengthens peroneals for ankle stability.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=KS6HJqkfUvI&t=220"
+          "youtubeUrl": "https://youtu.be/7SF7AYh2_Yw?si=eJZrFrARuuE_GDNt&t=5"
         }
       ]
     },
@@ -4601,19 +4846,19 @@
       ],
       "stretches": [
         {
-          "name": "Gastrocnemius Stretch",
-          "description": "Face wall, step one foot back, keep heel down and knee straight. Lean in until stretch felt in calf. Hold 30 seconds each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u59db2PhbV4&t=65"
+          "name": "Downward Dog Stretch",
+          "description": "From hands and feet, push hips up forming an inverted V. Press heels toward floor. Alternate bending knees to deepen calf stretch.",
+          "youtubeUrl": ""
         },
         {
           "name": "Foam Roll Calf",
           "description": "Sit with calf on foam roller. Roll from ankle to knee. Cross other leg on top for more pressure. 2 minutes each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u59db2PhbV4&t=270"
+          "youtubeUrl": "https://www.youtube.com/watch?v=nZZe9ai7Vvw"
         },
         {
-          "name": "Downward Dog Stretch",
-          "description": "From hands and feet, push hips up forming an inverted V. Press heels toward floor. Alternate bending knees to deepen calf stretch.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u59db2PhbV4&t=330"
+          "name": "Gastrocnemius Stretch",
+          "description": "Face wall, step one foot back, keep heel down and knee straight. Lean in until stretch felt in calf. Hold 30 seconds each leg.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=y01ri_43G50"
         }
       ]
     },
@@ -4648,19 +4893,19 @@
       ],
       "stretches": [
         {
-          "name": "Toe Flexor Stretch",
-          "description": "Sit with legs extended. Use hand to pull toes back toward you. Hold 20 seconds. Stretches sole of foot and toe flexors.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=75"
-        },
-        {
           "name": "Soleus Stretch",
           "description": "Wall stretch with back knee slightly bent. Lean forward until stretch felt in lower calf. Hold 30 seconds each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=u59db2PhbV4&t=205"
+          "youtubeUrl": "https://www.youtube.com/watch?v=Zmc36LtB7f8"
         },
         {
           "name": "Tennis Ball Arch Roll",
           "description": "Stand and roll tennis ball under arch of foot with moderate pressure. 2 minutes each foot. Releases toe flexor tightness.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=145"
+          "youtubeUrl": "https://www.youtube.com/watch?v=J1mgaWZ8tWY"
+        },
+        {
+          "name": "Toe Flexor Stretch",
+          "description": "Sit with legs extended. Use hand to pull toes back toward you. Hold 20 seconds. Stretches sole of foot and toe flexors.",
+          "youtubeUrl": "https://youtu.be/26g2nrnZ53Y?si=zh4dgkPy6GoQDmrs&t=13"
         }
       ]
     },
@@ -4696,19 +4941,19 @@
       ],
       "stretches": [
         {
+          "name": "Foam Roll Tibialis Anterior",
+          "description": "Sit with shin on foam roller. Roll from below knee to above ankle. Turn leg to reach all of front shin. 2 minutes each leg.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=C5TCKZ7k_cg"
+        },
+        {
           "name": "Kneeling Ankle Stretch",
           "description": "Kneel with tops of feet flat on floor. Gently sit back on heels. Hold 20-30 seconds. Stretches front of ankle and toe extensors.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=210"
+          "youtubeUrl": "https://youtu.be/2cuYI6s3Qlo?si=pxUJhOq6Rcca11_B&t=6"
         },
         {
           "name": "Standing Toe Point Stretch",
           "description": "Stand and place top of one foot on floor behind you, toes pointed back. Gently press down. Hold 20 seconds each foot.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=275"
-        },
-        {
-          "name": "Foam Roll Tibialis Anterior",
-          "description": "Sit with shin on foam roller. Roll from below knee to above ankle. Turn leg to reach all of front shin. 2 minutes each leg.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=340"
+          "youtubeUrl": "https://www.youtube.com/watch?v=I4de5H6zHvQ"
         }
       ]
     },
@@ -4774,19 +5019,19 @@
       ],
       "stretches": [
         {
+          "name": "Arch Massage with Ball",
+          "description": "Roll golf or tennis ball under arch of foot. Apply moderate pressure. 2-3 minutes each foot. Releases tension in foot muscles.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=J1mgaWZ8tWY"
+        },
+        {
           "name": "Toe Spread and Squeeze",
           "description": "Spread toes as wide as possible, hold 5 seconds. Then squeeze toes together. Repeat 15 times. Strengthens foot intrinsics.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=405"
+          "youtubeUrl": "https://www.youtube.com/watch?v=TniXJGIuZiE"
         },
         {
           "name": "Towel Scrunches",
           "description": "Place towel flat on floor. Use toes to scrunch towel toward you. Repeat until towel is fully scrunched. Strengthens arch muscles.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=465"
-        },
-        {
-          "name": "Arch Massage with Ball",
-          "description": "Roll golf or tennis ball under arch of foot. Apply moderate pressure. 2-3 minutes each foot. Releases tension in foot muscles.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=525"
+          "youtubeUrl": "https://www.youtube.com/watch?v=1ogSryKJXB4"
         }
       ]
     },
@@ -4827,19 +5072,19 @@
       ],
       "stretches": [
         {
+          "name": "Big Toe Circles",
+          "description": "Hold big toe and make slow circles - 10 clockwise, 10 counterclockwise. Helps maintain mobility in big toe joint.",
+          "youtubeUrl": "https://www.youtube.com/watch?v=azdPlkX8_1Q"
+        },
+        {
           "name": "Big Toe Stretch",
           "description": "Sit and cross ankle over opposite knee. Use hand to gently pull big toe up and back. Hold 20 seconds. Repeat 3 times each foot.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=590"
+          "youtubeUrl": "https://www.youtube.com/watch?v=SbQ2RYxbppE&t=9s"
         },
         {
           "name": "Toe Spread with Spacers",
           "description": "Place toe spacers between all toes. Keep on for 10-15 minutes while relaxing. Helps restore natural toe position.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=645"
-        },
-        {
-          "name": "Big Toe Circles",
-          "description": "Hold big toe and make slow circles - 10 clockwise, 10 counterclockwise. Helps maintain mobility in big toe joint.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=700"
+          "youtubeUrl": "https://youtu.be/VWMjU9eeHnI?si=i-hfDTS55lVOUSQH&t=22"
         }
       ]
     },
@@ -4875,19 +5120,19 @@
       ],
       "stretches": [
         {
+          "name": "Outer Foot Roll",
+          "description": "Roll outer edge of foot on tennis ball. From heel to base of small toe. Moderate pressure. 2 minutes each foot.",
+          "youtubeUrl": "https://youtu.be/xTUmZcxf_tI?si=B3dnRyJ7qBgHQRpP&t=122"
+        },
+        {
           "name": "Small Toe Stretch",
           "description": "Gently pull small toes up and back using your hand. Hold 15-20 seconds. Repeat 3 times each foot.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=755"
+          "youtubeUrl": "https://www.youtube.com/watch?v=ewskRZTJDo4"
         },
         {
           "name": "Toe Splay Exercise",
           "description": "Spread all toes as wide as possible, focusing on separating small toes. Hold 10 seconds. Repeat 10 times.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=405"
-        },
-        {
-          "name": "Outer Foot Roll",
-          "description": "Roll outer edge of foot on tennis ball. From heel to base of small toe. Moderate pressure. 2 minutes each foot.",
-          "youtubeUrl": "https://www.youtube.com/watch?v=3mKnUvK2hcs&t=810"
+          "youtubeUrl": "https://youtu.be/VtkE0xDMhXc?si=2lfNtkuKdAkZtSDx&t=44"
         }
       ]
     }
@@ -5672,6 +5917,7 @@
 
     function showMuscleIndicator(muscleData, showButton, mesh, isHover = false) {
       const indicator = document.getElementById('muscle-indicator');
+      const overlay = document.getElementById('muscle-indicator-overlay');
       document.getElementById('indicator-muscle-name').textContent = muscleData.name;
       document.getElementById('indicator-muscle-desc').textContent = muscleData.laymanDescription || '';
       
@@ -5688,6 +5934,7 @@
       }
       
       indicator.classList.add('visible');
+      if (overlay) overlay.classList.add('visible');
       
       // Update pointer line
       updatePointerLine();
@@ -5695,6 +5942,8 @@
 
     function hideMuscleIndicator() {
       document.getElementById('muscle-indicator').classList.remove('visible');
+      const overlay = document.getElementById('muscle-indicator-overlay');
+      if (overlay) overlay.classList.remove('visible');
       hidePointerLine();
       currentIndicatorMesh = null;
       hoveredMuscleData = null;
@@ -5796,8 +6045,8 @@
     let yOffset1 = 0;
     let yOffset2 = 0;
     const Y_STEP = 0.15;
-    const Y_MIN = -0.4;  // Limit: don't let feet go beyond middle of screen
-    const Y_MAX = 0.5;   // Limit: don't go too far up past head
+    const Y_MIN = -0.8;  // Doubled: allow viewing feet better
+    const Y_MAX = 1.0;   // Doubled: allow more upward scrolling
 
     function moveModelY1(direction) {
       const newOffset = yOffset1 + direction * Y_STEP;
@@ -6064,14 +6313,6 @@
     // Expose to window for onclick handlers
     window.handleCustomCauseInput = handleCustomCauseInput;
 
-    function updatePainDisplay(value) {
-      state.painLevel = parseInt(value);
-      document.getElementById('pain-number').textContent = value;
-      
-      const painData = PAINSENSE_DATA.painLevels.find(p => p.level === state.painLevel);
-      document.getElementById('pain-label').textContent = painData ? painData.label : '';
-    }
-
     // ============================================
     // SCREEN NAVIGATION
     // ============================================
@@ -6109,11 +6350,6 @@
             onResize2();
           });
         });
-      }
-
-      if (screenId === 'screen-intensity') {
-        const muscleData = PAINSENSE_DATA.muscles[state.selectedMuscleId];
-        document.getElementById('intensity-muscle-name').textContent = muscleData ? muscleData.name : 'Selected Muscle';
       }
 
       if (screenId === 'screen-cause') {
@@ -6162,7 +6398,7 @@
 
     function confirmMuscleSelection() {
       if (!state.selectedMuscleId) return;
-      goToScreen('screen-intensity');
+      goToScreen('screen-cause');
     }
 
     function showResults() {
@@ -6277,9 +6513,6 @@
       state.selectedCause = null;
 
       // Reset UI
-      document.getElementById('pain-slider').value = 5;
-      updatePainDisplay(5);
-      
       document.querySelectorAll('.region-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.muscle-list-item').forEach(item => item.classList.remove('active'));
       
@@ -6315,15 +6548,6 @@
       initScene1();
       initScene2();
 
-      // Pain slider event
-      const painSlider = document.getElementById('pain-slider');
-      painSlider.addEventListener('input', (e) => {
-        updatePainDisplay(e.target.value);
-      });
-
-      // Initialize pain display
-      updatePainDisplay(5);
-
       // Make functions globally available for onclick handlers
       window.goToScreen = goToScreen;
       window.hideOverlay = hideOverlay;
@@ -6351,9 +6575,30 @@
       };
     }
 
+    // ============================================
+    // DISCLAIMER FUNCTIONS
+    // ============================================
+    function updateDisclaimerButton() {
+      const checkbox = document.getElementById('disclaimer-agree');
+      const btn = document.getElementById('disclaimer-btn');
+      btn.disabled = !checkbox.checked;
+    }
+
+    function acceptDisclaimer() {
+      const disclaimerScreen = document.getElementById('disclaimer-screen');
+      disclaimerScreen.classList.add('hidden');
+    }
+
+    // Expose disclaimer functions globally
+    window.updateDisclaimerButton = updateDisclaimerButton;
+    window.acceptDisclaimer = acceptDisclaimer;
+
     // Start the app
     init();
+
+    // Always show disclaimer on load (removed localStorage check)
 
   </script>
 </body>
 </html>
+
